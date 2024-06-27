@@ -7,7 +7,7 @@ spring:
   datasource:
     username: 'postgres'
     password: 'skylite=2011'
-    url: jdbc:postgresql://localhost:5432/pbu_agents
+    url: jdbc:postgresql://localhost:5432/agents_db
     driver-class-name: org.postgresql.Driver
 
   jpa:

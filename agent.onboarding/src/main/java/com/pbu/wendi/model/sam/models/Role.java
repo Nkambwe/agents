@@ -21,6 +21,7 @@ import java.util.Objects;
 @SuperBuilder
 @Entity
 @ToString(callSuper=true)
+@Table(name="ag_role")
 public class Role extends DomainEntity {
 
     @Column(length = 225, nullable = false)

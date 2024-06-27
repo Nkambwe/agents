@@ -1,8 +1,8 @@
 package com.pbu.wendi.services.agents.services;
 
-import com.pbu.wendi.model.agents.models.Outlet;
-import com.pbu.wendi.repositories.agents.repos.OutletRepository;
-import com.pbu.wendi.requests.agents.dto.OutletRequest;
+import com.pbu.wendi.model.agents.models.Wallet;
+import com.pbu.wendi.repositories.agents.repos.WalletRepository;
+import com.pbu.wendi.requests.agents.dto.WalletRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;
@@ -14,24 +14,24 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Service
-public class OutletServiceImp implements OutletService {
+public class WalletServiceImp implements WalletService {
     private final AppLoggerService logger;
     private final ModelMapper mapper;
-    private final OutletRepository outlets;
+    private final WalletRepository wallets;
 
-    public OutletServiceImp(AppLoggerService logger, ModelMapper mapper, OutletRepository outlets) {
+    public WalletServiceImp(AppLoggerService logger, ModelMapper mapper, WalletRepository wallets) {
         this.logger = logger;
         this.mapper = mapper;
-        this.outlets = outlets;
+        this.wallets = wallets;
     }
 
     @Override
-    public CompletableFuture<Boolean> outletExists(long id) {
-        logger.info("Check if outlet exists");
+    public CompletableFuture<Boolean> walletExists(long id) {
+        logger.info("Check if wallet exists");
         try{
-            return CompletableFuture.completedFuture(outlets.existsById(id));
+            return CompletableFuture.completedFuture(wallets.existsById(id));
         } catch(Exception ex){
-            logger.info("An error occurred in method 'outletExists' in 'OutletService'");
+            logger.info("An error occurred in method 'walletExists' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -41,11 +41,11 @@ public class OutletServiceImp implements OutletService {
 
     @Override
     public CompletableFuture<Boolean> existsByName(String name) {
-        logger.info("Check if outlet exists");
+        logger.info("Check if wallet exists");
         try{
-            return CompletableFuture.completedFuture(outlets.existsByOutletName(name));
+            return CompletableFuture.completedFuture(wallets.existsByWalletName(name));
         } catch(Exception ex){
-            logger.info("An error occurred in method 'existsByName' in 'OutletService'");
+            logger.info("An error occurred in method 'existsByName' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -55,11 +55,11 @@ public class OutletServiceImp implements OutletService {
 
     @Override
     public CompletableFuture<Boolean> existsByNameAndNotId(String name, Long id) {
-        logger.info(String.format("Retrieving outlet with name %s and agent Id %s", name, id));
+        logger.info(String.format("Retrieving Wallet with name %s and agent Id %s", name, id));
         try{
-            return CompletableFuture.completedFuture(outlets.existsByOutletNameAndIdNot(name, id));
+            return CompletableFuture.completedFuture(wallets.existsByWalletNameAndIdNot(name, id));
         } catch(Exception ex){
-            logger.info("An error occurred in method 'existsByNameAndNotId' in 'OutletService'");
+            logger.info("An error occurred in method 'existsByNameAndNotId' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -68,19 +68,19 @@ public class OutletServiceImp implements OutletService {
     }
 
     @Override
-    public CompletableFuture<OutletRequest> findOutletsById(long id) {
-        logger.info(String.format("Retrieving outlet with ID %s", id));
+    public CompletableFuture<WalletRequest> findWalletById(long id) {
+        logger.info(String.format("Retrieving Wallet with ID %s", id));
         try{
 
-            Outlet record = outlets.findById(id);
+            Wallet record = wallets.findById(id);
             if (record != null) {
-                OutletRequest request = this.mapper.map(record, OutletRequest.class);
+                WalletRequest request = this.mapper.map(record, WalletRequest.class);
                 return CompletableFuture.completedFuture(request);
             }
 
             return CompletableFuture.completedFuture(null);
         } catch(Exception ex){
-            logger.info("An error occurred in method 'findOutletsById' in 'OutletService'");
+            logger.info("An error occurred in method 'findWalletById' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -89,19 +89,19 @@ public class OutletServiceImp implements OutletService {
     }
 
     @Override
-    public CompletableFuture<OutletRequest> findOutletsByName(String name) {
-        logger.info(String.format("Retrieving telecom with name %s", name));
+    public CompletableFuture<WalletRequest> findWalletByName(String name) {
+        logger.info(String.format("Retrieving Wallet with name %s", name));
         try{
 
-            Outlet record = outlets.findByOutletName(name);
+            Wallet record = wallets.findByWalletName(name);
             if (record != null) {
-                OutletRequest request = this.mapper.map(record, OutletRequest.class);
+                WalletRequest request = this.mapper.map(record, WalletRequest.class);
                 return CompletableFuture.completedFuture(request);
             }
 
             return CompletableFuture.completedFuture(null);
         } catch(Exception ex){
-            logger.info("An error occurred in method 'findOutletsByName' in 'OutletService'");
+            logger.info("An error occurred in method 'findWalletByName' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -110,21 +110,21 @@ public class OutletServiceImp implements OutletService {
     }
 
     @Override
-    public CompletableFuture<List<OutletRequest>> getAllOutlets() {
-        logger.info("Retrieve all telecoms");
-        List<OutletRequest> records  = new ArrayList<>();
+    public CompletableFuture<List<WalletRequest>> getAllWallet() {
+        logger.info("Retrieve all Wallets");
+        List<WalletRequest> records  = new ArrayList<>();
         try{
-            //..get Outlet records
-            List<Outlet>telecomRecords = outlets.findAll();
-            if(!telecomRecords.isEmpty()){
-                for (Outlet record : telecomRecords) {
-                    records.add(this.mapper.map(record, OutletRequest.class));
+            //..get wallet records
+            List<Wallet> walletRecords = wallets.findAll();
+            if(!walletRecords.isEmpty()){
+                for (Wallet record : walletRecords) {
+                    records.add(this.mapper.map(record, WalletRequest.class));
                 }
             }
 
             return CompletableFuture.completedFuture(records);
         } catch(Exception ex){
-            logger.info("An error occurred in method 'getAllOutlets' in 'OutletService'");
+            logger.info("An error occurred in method 'getAllWallet' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -133,21 +133,21 @@ public class OutletServiceImp implements OutletService {
     }
 
     @Override
-    public CompletableFuture<List<OutletRequest>> getActiveOutlets() {
-        logger.info("Retrieve active telecoms");
-        List<OutletRequest> records  = new ArrayList<>();
+    public CompletableFuture<List<WalletRequest>> getActiveWallets() {
+        logger.info("Retrieve active wallets");
+        List<WalletRequest> records  = new ArrayList<>();
         try{
             //..get telecom records
-            List<Outlet>telecomRecords = outlets.findActiveOutlets();
+            List<Wallet>telecomRecords = wallets.findActiveWallet();
             if(!telecomRecords.isEmpty()){
-                for (Outlet record : telecomRecords) {
-                    records.add(this.mapper.map(record, OutletRequest.class));
+                for (Wallet record : telecomRecords) {
+                    records.add(this.mapper.map(record, WalletRequest.class));
                 }
             }
 
             return CompletableFuture.completedFuture(records);
         } catch(Exception ex){
-            logger.info("An error occurred in method 'getActiveOutlets' in 'OutletService'");
+            logger.info("An error occurred in method 'getActiveWallets' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -156,15 +156,15 @@ public class OutletServiceImp implements OutletService {
     }
 
     @Override
-    public CompletableFuture<OutletRequest> create(OutletRequest outlet) throws InterruptedException {
-        logger.info("Adding new telecom");
+    public CompletableFuture<WalletRequest> create(WalletRequest outlet) throws InterruptedException {
+        logger.info("Adding new wallet");
         try{
-            Outlet record = this.mapper.map(outlet, Outlet.class);
-            outlets.save(record);
+            Wallet record = this.mapper.map(outlet, Wallet.class);
+            wallets.save(record);
             record.setId(record.getId());
             return CompletableFuture.completedFuture(outlet);
         }catch(Exception ex){
-            logger.info("An error occurred in method 'create' in 'OutletService'");
+            logger.info("An error occurred in method 'create' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -173,14 +173,14 @@ public class OutletServiceImp implements OutletService {
     }
 
     @Override
-    public void update(OutletRequest outlet) {
-        logger.info("update telecom");
+    public void update(WalletRequest wallet) {
+        logger.info("update wallet");
         try{
-            Outlet record = this.mapper.map(outlet, Outlet.class);
-            record.setId(outlet.getId());
-            outlets.updateTelecom(record);
+            Wallet record = this.mapper.map(wallet, Wallet.class);
+            record.setId(wallet.getId());
+            wallets.updateWallet(record);
         } catch(Exception ex){
-            logger.info("An error occurred in method 'update' in OutletService");
+            logger.info("An error occurred in method 'update' in WalletService");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -190,12 +190,12 @@ public class OutletServiceImp implements OutletService {
 
     @Override
     public void softDelete(long id, boolean deleted) {
-        logger.info("Soft Delete telecom");
+        logger.info("Soft Delete wallet");
         try{
-            logger.info(String.format("Telecom is_deleted value set to %s", deleted ? "true": "false"));
-            outlets.markAsDeleted(id, deleted);
+            logger.info(String.format("Wallet is_deleted value set to %s", deleted ? "true": "false"));
+            wallets.markAsDeleted(id, deleted);
         } catch(Exception ex){
-            logger.info("An error occurred in method 'softDelete' in 'OutletService'");
+            logger.info("An error occurred in method 'softDelete' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -205,12 +205,12 @@ public class OutletServiceImp implements OutletService {
 
     @Override
     public void delete(long id) {
-        logger.info("Delete outlet");
+        logger.info("Delete wallet");
         try{
-            logger.info(String.format("Delete outlet with id %s", id));
-            outlets.deleteById(id);
+            logger.info(String.format("Delete wallet with id %s", id));
+            wallets.deleteById(id);
         } catch(Exception ex){
-            logger.info("An error occurred in method 'delete' in 'OutletService'");
+            logger.info("An error occurred in method 'delete' in 'WalletService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));

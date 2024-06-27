@@ -17,23 +17,23 @@ import java.util.Objects;
 @SuperBuilder
 @Entity
 @ToString(callSuper=true)
-public class District extends DomainEntity {
+public class BusinessNature extends DomainEntity {
     @Column(length = 200, nullable=false)
-    private String districtName;
+    private String nature;
 
-    public District() {
+    public BusinessNature() {
         super();
     }
 
-    @OneToMany(mappedBy = "district", fetch = FetchType.EAGER)
-    private List<County> counties;
+    @OneToMany(mappedBy = "biz_nature", fetch = FetchType.EAGER)
+    private List<BusinessAgent> agent;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        District that = (District) o;
-        return !getDistrictName().equals("") && Objects.equals(getDistrictName(), that.getDistrictName());
+        BusinessNature that = (BusinessNature) o;
+        return !getNature().equals("") && Objects.equals(getNature(), that.getNature());
     }
 
     @Override

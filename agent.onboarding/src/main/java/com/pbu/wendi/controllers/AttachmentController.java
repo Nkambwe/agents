@@ -1,5 +1,6 @@
 package com.pbu.wendi.controllers;
 
+import com.pbu.wendi.configurations.ApplicationExceptionHandler;
 import com.pbu.wendi.services.sam.services.LogService;
 import com.pbu.wendi.requests.attachments.dto.AttachmentRequest;
 import com.pbu.wendi.requests.attachments.dto.IdentificationRequest;

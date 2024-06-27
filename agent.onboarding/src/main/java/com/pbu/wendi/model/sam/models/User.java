@@ -22,6 +22,7 @@ import java.util.Objects;
 @SuperBuilder
 @Entity
 @ToString(callSuper=true)
+@Table(name="ag_user")
 public class User extends DomainEntity {
     @Column(nullable = false, length = 80)
     private String username;

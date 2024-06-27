@@ -49,6 +49,15 @@ public class IndividualAgent extends Agent {
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private List<Approval> approvals;
 
+    @Column(length = 220, nullable=false)
+    private String district;
+
+    @Column(length = 220, nullable=false)
+    private String county;
+
+    @Column(length = 220, nullable=false)
+    private String villageOrParish;
+
     @ManyToOne
     private Affiliation affiliation;
 
@@ -56,7 +65,7 @@ public class IndividualAgent extends Agent {
     private Bank bank;
 
     @ManyToOne
-    private Outlet outlet;
+    private Wallet wallet;
 
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private List<Operator> operators;

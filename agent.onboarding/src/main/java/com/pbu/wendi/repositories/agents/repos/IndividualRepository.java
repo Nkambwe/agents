@@ -49,7 +49,7 @@ public interface IndividualRepository extends JpaRepository<IndividualAgent, Lon
 
     @Transactional
     @Modifying
-    @Query("UPDATE IndividualAgent i SET i.firstName = :#{#person.firstName}, i.middleName = :#{#person.middleName}, i.surname = :#{#person.surname}, i.birthDate = :#{#person.birthDate}, i.gender = :#{#person.gender}, i.identificationId = :#{#person.identificationId}, i.personalTin = :#{#person.personalTin}, i.primaryContact = :#{#person.primaryContact}, i.secondaryContact = :#{#person.secondaryContact}, i.email = :#{#person.email} WHERE i.id = :#{#person.id}")
+    @Query("UPDATE IndividualAgent i SET i.firstName = :#{#person.firstName}, i.middleName = :#{#person.middleName}, i.surname = :#{#person.surname}, i.birthDate = :#{#person.birthDate}, i.gender = :#{#person.gender}, i.identificationId = :#{#person.identificationId}, i.personalTin = :#{#person.personalTin}, i.primaryContact = :#{#person.primaryContact}, i.secondaryContact = :#{#person.secondaryContact}, i.email = :#{#person.email},i.district = :#{#person.district},i.county = :#{#person.county},i.villageOrParish = :#{#person.villageOrParish} WHERE i.id = :#{#person.id}")
     void update(@Param("person") IndividualAgent person);
 
     @Transactional

@@ -1,5 +1,6 @@
 package com.pbu.wendi.controllers;
 
+import com.pbu.wendi.configurations.ApplicationExceptionHandler;
 import com.pbu.wendi.requests.agents.dto.*;
 import com.pbu.wendi.services.agents.services.*;
 import com.pbu.wendi.utils.common.AppLoggerService;
@@ -38,9 +39,11 @@ public class AgentController {
     private final SignatoryService signatories;
     private final SettingService settings;
     private final BankService banks;
-    private final OutletService outlets;
+    private final WalletService wallets;
     private final DistrictService districts;
-
+    private final CountyService counties;
+    private final ParishService parishes;
+    private final BusinessNatureService natureService;
     public AgentController(
             ModelMapper mapper,
             AppLoggerService logger,
@@ -54,8 +57,11 @@ public class AgentController {
             SignatoryService signatories,
             SettingService settings,
             BankService banks,
-            OutletService outlets,
-            DistrictService districts) {
+            WalletService outlets,
+            DistrictService districts,
+            CountyService counties,
+            ParishService parishes,
+            BusinessNatureService natureService) {
         this.logger = logger;
         this.mapper = mapper;
         this.exceptionHandler = exceptionHandler;
@@ -68,11 +74,15 @@ public class AgentController {
         this.signatories = signatories;
         this.settings = settings;
         this.banks = banks;
-        this.outlets = outlets;
+        this.wallets = outlets;
         this.districts = districts;
+        this.counties = counties;
+        this.parishes = parishes;
+        this.natureService = natureService;
     }
 
     //region all agents
+
     @GetMapping("/getAgentById/{agentId}/{agentType}/{userId}")
     public ResponseEntity<?> getAgentById(@PathVariable("agentId") long agentId,
                                           @PathVariable("agentType")int agentType,
@@ -2480,21 +2490,22 @@ public class AgentController {
 
     //endregion
 
-    //region outlets
-    @GetMapping("/getOutletById/{id}/{userId}")
-    public ResponseEntity<?> getOutletById(@PathVariable("id") long id,
+    //region wallets
+
+    @GetMapping("/getWalletById/{id}/{userId}")
+    public ResponseEntity<?> getWalletById(@PathVariable("id") long id,
                                             @PathVariable("userId") long userId,
                                             HttpServletRequest request){
 
-        logger.info(String.format("Retrieve Outlet with ID '%s' by user with id %s" ,id, userId));
-        OutletRequest record;
+        logger.info(String.format("Retrieve Wallet with ID '%s' by user with id %s" ,id, userId));
+        WalletRequest record;
         try {
-            CompletableFuture<OutletRequest> futureRecord = outlets.findOutletsById(id);
+            CompletableFuture<WalletRequest> futureRecord = wallets.findWalletById(id);
             record = futureRecord.join();
             if(record == null){
-                logger.info(String.format("Outlet with id %s not found. Returned a 404 code - Resource not found", id));
+                logger.info(String.format("Wallet with id %s not found. Returned a 404 code - Resource not found", id));
                 return exceptionHandler.resourceNotFoundExceptionHandler(
-                        new NotFoundException("Telecom","ID",id),
+                        new NotFoundException("Wallet","ID",id),
                         request);
             }
 
@@ -2509,26 +2520,26 @@ public class AgentController {
 
         if(record == null){
             return exceptionHandler.resourceNotFoundExceptionHandler(
-                    new NotFoundException("Outlet", "Id", String.format("%s", id)),
+                    new NotFoundException("Wallet", "Id", String.format("%s", id)),
                     request);
         }
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/ getOutletByName/{name}/{userId}")
-    public ResponseEntity<?> getOutletByName(@PathVariable("name") String name,
+    @GetMapping("/ getWalletByName/{name}/{userId}")
+    public ResponseEntity<?> getWalletByName(@PathVariable("name") String name,
                                               @PathVariable("userId") long userId,
                                               HttpServletRequest request){
-        logger.info(String.format("Retrieve outlet with name '%s' by user with id %s" ,name, userId));
-        OutletRequest record;
+        logger.info(String.format("Retrieve Wallet with name '%s' by user with id %s" ,name, userId));
+        WalletRequest record;
         try {
-            CompletableFuture<OutletRequest> futureRecord = outlets.findOutletsByName(name);
+            CompletableFuture<WalletRequest> futureRecord = wallets.findWalletByName(name);
             record = futureRecord.join();
             if(record == null){
-                logger.info(String.format("Outlet with name '%s' not found. Returned a 404 code - Resource not found", name));
+                logger.info(String.format("Wallet with name '%s' not found. Returned a 404 code - Resource not found", name));
                 return exceptionHandler.resourceNotFoundExceptionHandler(
-                        new NotFoundException("Outlet","Name",name),
+                        new NotFoundException("Wallet","Name",name),
                         request);
             }
         } catch (Exception e) {
@@ -2538,15 +2549,16 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getOutlets/{userId}")
-    public ResponseEntity<?>getOutlets(@PathVariable("userId") long userId,
+
+    @GetMapping("/getWallets/{userId}")
+    public ResponseEntity<?>getWallets(@PathVariable("userId") long userId,
                                            HttpServletRequest request){
-        logger.info(String.format("Retrieve all outlets by user with id %s",userId));
+        logger.info(String.format("Retrieve all wallets by user with id %s",userId));
 
-        List<OutletRequest> records;
+        List<WalletRequest> records;
         try {
-            CompletableFuture<List<OutletRequest>> telecomsRecords = outlets.getAllOutlets();
-            records = telecomsRecords.get();
+            CompletableFuture<List<WalletRequest>> walletRecords = wallets.getAllWallet();
+            records = walletRecords.get();
 
             //...check for null records
             if(records == null || records.isEmpty()){
@@ -2566,15 +2578,15 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/getActiveOutlets/{userId}")
-    public ResponseEntity<?>getActiveOutlets(@PathVariable("userId") long userId,
+    @GetMapping("/getActiveWallets/{userId}")
+    public ResponseEntity<?>getActiveWallets(@PathVariable("userId") long userId,
                                               HttpServletRequest request){
-        logger.info(String.format("Retrieve all outlets by user with id %s",userId));
+        logger.info(String.format("Retrieve all wallets by user with id %s",userId));
 
-        List<OutletRequest> records;
+        List<WalletRequest> records;
         try {
-            CompletableFuture<List<OutletRequest>> operatorRecords = outlets.getActiveOutlets();
-            records = operatorRecords.get();
+            CompletableFuture<List<WalletRequest>> walletRecords = wallets.getActiveWallets();
+            records = walletRecords.get();
 
             //...check for null records
             if(records == null || records.isEmpty()){
@@ -2594,12 +2606,12 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PutMapping("/createOutlet/{userId}")
-    public ResponseEntity<?> createOutlet(@RequestBody @Valid OutletRequest outlet,
+    @PutMapping("/createWallet/{userId}")
+    public ResponseEntity<?> createWallet(@RequestBody @Valid WalletRequest wallet,
                                            @PathVariable("userId") long userId,
                                            BindingResult bindingResult,
                                            HttpServletRequest request){
-        logger.info(String.format("Create new outlet by user with id %s", userId));
+        logger.info(String.format("Create new wallet by user with id %s", userId));
 
         // Validate request object
         if (bindingResult.hasErrors()) {
@@ -2608,23 +2620,23 @@ public class AgentController {
                     request);
         }
 
-        OutletRequest record;
+        WalletRequest record;
         try {
-            //check whether outlet name is not in use
-            String name = outlet.getOutletName();
-            logger.info(String.format("Checking whether outlet assigned name '%s' is not in use.", name));
-            CompletableFuture<Boolean> recordExists = this.outlets.existsByName(name);
+            //check whether wallet name is not in use
+            String name = wallet.getWalletName();
+            logger.info(String.format("Checking whether wallet assigned name '%s' is not in use.", name));
+            CompletableFuture<Boolean> recordExists = this.wallets.existsByName(name);
             boolean exists = recordExists.join();
             if(exists){
-                logger.info(String.format("Resource Conflict! Another outlet with name '%s' exists", name));
+                logger.info(String.format("Resource Conflict! Another wallet with name '%s' exists", name));
                 return exceptionHandler.duplicatesResourceExceptionHandler(
-                        new DuplicateException("Outlet", "Name", name),
+                        new DuplicateException("Wallet", "Name", name),
                         request);
             }
 
             //..return create record
-            CompletableFuture<OutletRequest> telecomRecord = this.outlets.create(outlet);
-            record = telecomRecord.join();
+            CompletableFuture<WalletRequest> walletRecord = this.wallets.create(wallet);
+            record = walletRecord.join();
         } catch (Exception e) {
             return exceptionHandler.errorHandler(
                     new GeneralException(e.getMessage()),request);
@@ -2632,18 +2644,18 @@ public class AgentController {
 
         if (record == null || record.getId() == 0) {
             return exceptionHandler.errorHandler(
-                    new GeneralException("An error occurred while saving Outlet"),request);
+                    new GeneralException("An error occurred while saving Wallet"),request);
         }
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PutMapping("/UpdateOutlet/{userId}")
-    public ResponseEntity<?> UpdateOutlet(@RequestBody @Valid OutletRequest outlet,
+    @PutMapping("/UpdateWallet/{userId}")
+    public ResponseEntity<?> UpdateWallet(@RequestBody @Valid WalletRequest wallet,
                                            @PathVariable("userId") long userId,
                                            BindingResult bindingResult,
                                            HttpServletRequest request){
-        logger.info(String.format("Modification of Outlet by user with id %s", userId));
+        logger.info(String.format("Modification of Wallet by user with id %s", userId));
 
         // Validate request object
         if (bindingResult.hasErrors()) {
@@ -2652,35 +2664,35 @@ public class AgentController {
                     request);
         }
 
-        OutletRequest record;
+        WalletRequest record;
         try {
 
-            //check for Outlet record
-            long recordId = outlet.getId();
-            CompletableFuture<Boolean> found = outlets.outletExists(recordId);
+            //check for wallet record
+            long recordId = wallet.getId();
+            CompletableFuture<Boolean> found = wallets.walletExists(recordId);
             boolean exists = found.join();
             if(!exists){
-                logger.info(String.format("Outlet with ID '%s' not found. Returned a 404 code - Resource not found", recordId));
+                logger.info(String.format("Wallet with ID '%s' not found. Returned a 404 code - Resource not found", recordId));
                 return exceptionHandler.resourceNotFoundExceptionHandler(
-                        new NotFoundException("Outlet","ID", recordId),
+                        new NotFoundException("Wallet","ID", recordId),
                         request);
             }
 
-            //check whether telecom name is not in use
-            String name = outlet.getOutletName();
-            logger.info(String.format("Checking whether Outlet assigned name '%s' is not in use.", name));
-            CompletableFuture<Boolean> recordExists = this.outlets.existsByNameAndNotId(name, recordId);
+            //check whether wallet name is not in use
+            String name = wallet.getWalletName();
+            logger.info(String.format("Checking whether Wallet assigned name '%s' is not in use.", name));
+            CompletableFuture<Boolean> recordExists = this.wallets.existsByNameAndNotId(name, recordId);
             exists = recordExists.join();
             if(exists){
-                logger.info(String.format("Resource Conflict! Another Outlet with name '%s' exists", name));
+                logger.info(String.format("Resource Conflict! Another Wallet with name '%s' exists", name));
                 return exceptionHandler.duplicatesResourceExceptionHandler(
-                        new DuplicateException("Outlet", "Name", name),
+                        new DuplicateException("Wallet", "Name", name),
                         request);
             }
 
             //..update record
-            this.outlets.update(outlet);
-            record = outlet;
+            this.wallets.update(wallet);
+            record = wallet;
         } catch (Exception e) {
             return exceptionHandler.errorHandler(
                     new GeneralException(e.getMessage()),request);
@@ -2689,26 +2701,26 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PostMapping("/softDeleteOutlet/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteOutlet(@PathVariable Long recordId,
+    @PostMapping("/softDeleteWallet/{recordId}/{isDeleted}/{userId}")
+    public ResponseEntity<?> softDeleteWallet(@PathVariable Long recordId,
                                                @PathVariable Boolean isDeleted,
                                                @PathVariable("userId") long userId,
                                                HttpServletRequest request){
-        logger.info(String.format("Mark Outlet '%s' as deleted by user with id %s" ,recordId, userId));
+        logger.info(String.format("Mark Wallet '%s' as deleted by user with id %s" ,recordId, userId));
 
         try {
 
-            CompletableFuture<OutletRequest> futureRecord = outlets.findOutletsById(recordId);
-            OutletRequest record = futureRecord.join();
+            CompletableFuture<WalletRequest> futureRecord = wallets.findWalletById(recordId);
+            WalletRequest record = futureRecord.join();
             if(record == null){
-                logger.info(String.format("Outlet with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId, userId));
+                logger.info(String.format("Wallet with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId, userId));
                 return exceptionHandler.resourceNotFoundExceptionHandler(
-                        new NotFoundException("Telecom","ID",recordId),
+                        new NotFoundException("Wallet","ID",recordId),
                         request);
             }
 
-            outlets.softDelete(recordId, isDeleted);
-            return new ResponseEntity<>("Outlet record updated successfully", HttpStatus.OK);
+            wallets.softDelete(recordId, isDeleted);
+            return new ResponseEntity<>("Wallet record updated successfully", HttpStatus.OK);
         } catch (Exception e) {
             String msg = e.getMessage();
             logger.error(String.format("General Error:: %s", msg));
@@ -2717,24 +2729,552 @@ public class AgentController {
 
     }
 
-    @PutMapping("/deleteOutlet/{recordId}/{userId}")
-    public ResponseEntity<?> deleteOutlet(@PathVariable Long recordId,
+    @PutMapping("/deleteWallet/{recordId}/{userId}")
+    public ResponseEntity<?> deleteWallet(@PathVariable Long recordId,
                                            @PathVariable("userId") long userId,
                                            HttpServletRequest request){
-        logger.info(String.format("Delete Outlet with ID '%s' by user with id %s",recordId, userId));
+        logger.info(String.format("Delete Wallet with ID '%s' by user with id %s",recordId, userId));
 
         try {
-            CompletableFuture<OutletRequest> outlet = this.outlets.findOutletsById(recordId);
-            OutletRequest record = outlet.join();
+            CompletableFuture<WalletRequest> outlet = this.wallets.findWalletById(recordId);
+            WalletRequest record = outlet.join();
             if(record == null){
-                logger.info(String.format("Outlet with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId ,userId));
+                logger.info(String.format("Wallet with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId ,userId));
                 return exceptionHandler.resourceNotFoundExceptionHandler(
-                        new NotFoundException("Outlet","ID", recordId),
+                        new NotFoundException("Wallet","ID", recordId),
                         request);
             }
 
-            outlets.delete(recordId);
-            return new ResponseEntity<>("Telecom record deleted successfully", HttpStatus.OK);
+            wallets.delete(recordId);
+            return new ResponseEntity<>("Wallet record deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+    }
+
+    //endregion
+
+    //region counties
+
+    @GetMapping("/getCountyById/{id}/{userId}")
+    public ResponseEntity<?> getCountyById(@PathVariable("id") long id,
+                                           @PathVariable("userId") long userId,
+                                           HttpServletRequest request){
+
+        logger.info(String.format("Retrieve County with ID '%s' by user with id %s" ,id, userId));
+        CountyRequest record;
+        try {
+            CompletableFuture<CountyRequest> futureRecord = counties.findCountyById(id);
+            record = futureRecord.join();
+            if(record == null){
+                logger.info(String.format("County with id %s not found. Returned a 404 code - Resource not found", id));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("County","ID",id),
+                        request);
+            }
+
+            record = futureRecord.get();
+        } catch (InterruptedException e) {
+            return exceptionHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        if(record == null){
+            return exceptionHandler.resourceNotFoundExceptionHandler(
+                    new NotFoundException("County", "Id", String.format("%s", id)),
+                    request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @GetMapping("/ getCountyByName/{name}/{userId}")
+    public ResponseEntity<?> getCountyByName(@PathVariable("name") String name,
+                                             @PathVariable("userId") long userId,
+                                             HttpServletRequest request){
+        logger.info(String.format("Retrieve County with name '%s' by user with id %s" ,name, userId));
+        CountyRequest record;
+        try {
+            CompletableFuture<CountyRequest> futureRecord = counties.findCountyByName(name);
+            record = futureRecord.join();
+            if(record == null){
+                logger.info(String.format("County with name '%s' not found. Returned a 404 code - Resource not found", name));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("County","Name",name),
+                        request);
+            }
+        } catch (Exception e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @GetMapping("/getCounties/{userId}")
+    public ResponseEntity<?>getCounties(@PathVariable("userId") long userId,
+                                       HttpServletRequest request){
+        logger.info(String.format("Retrieve all counties by user with id %s",userId));
+
+        List<CountyRequest> records;
+        try {
+            CompletableFuture<List<CountyRequest>> countiesRecords = counties.getAllCounties();
+            records = countiesRecords.get();
+
+            //...check for null records
+            if(records == null || records.isEmpty()){
+                logger.info("No records found in database");
+                records = new ArrayList<>();
+            }
+        } catch (InterruptedException e) {
+            logger.info("Thread Exception:: Action cancelled by user");
+            return exceptionHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
+
+    @GetMapping("/getActiveCounties/{userId}")
+    public ResponseEntity<?>getActiveCounties(@PathVariable("userId") long userId,
+                                             HttpServletRequest request){
+        logger.info(String.format("Retrieve all counties by user with id %s",userId));
+
+        List<CountyRequest> records;
+        try {
+            CompletableFuture<List<CountyRequest>> countiesRecords = counties.getActiveCounties();
+            records = countiesRecords.get();
+
+            //...check for null records
+            if(records == null || records.isEmpty()){
+                logger.info("No records found in database");
+                records = new ArrayList<>();
+            }
+        } catch (InterruptedException e) {
+            logger.info("Thread Exception:: Action cancelled by user");
+            return exceptionHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
+
+    @PutMapping("/createCounty/{userId}")
+    public ResponseEntity<?> createCounty(@RequestBody @Valid CountyRequest county,
+                                          @PathVariable("userId") long userId,
+                                          BindingResult bindingResult,
+                                          HttpServletRequest request){
+        logger.info(String.format("Create new county by user with id %s", userId));
+
+        // Validate request object
+        if (bindingResult.hasErrors()) {
+            return exceptionHandler.validationExceptionHandler(
+                    new ValidationException(Generators.buildErrorMessage(bindingResult)),
+                    request);
+        }
+
+        CountyRequest record;
+        try {
+            //check whether county name is not in use
+            String name = county.getCountyName();
+            logger.info(String.format("Checking whether county assigned name '%s' is not in use.", name));
+            CompletableFuture<Boolean> recordExists = this.counties.existsByName(name);
+            boolean exists = recordExists.join();
+            if(exists){
+                logger.info(String.format("Resource Conflict! Another county with name '%s' exists", name));
+                return exceptionHandler.duplicatesResourceExceptionHandler(
+                        new DuplicateException("County", "Name", name),
+                        request);
+            }
+
+            //..return create record
+            CompletableFuture<CountyRequest> countiesRecord = this.counties.create(county);
+            record = countiesRecord.join();
+        } catch (Exception e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        if (record == null || record.getId() == 0) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException("An error occurred while saving County"),request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @PutMapping("/UpdateCounty/{userId}")
+    public ResponseEntity<?> UpdateCounty(@RequestBody @Valid CountyRequest county,
+                                          @PathVariable("userId") long userId,
+                                          BindingResult bindingResult,
+                                          HttpServletRequest request){
+        logger.info(String.format("Modification of County by user with id %s", userId));
+
+        // Validate request object
+        if (bindingResult.hasErrors()) {
+            return exceptionHandler.validationExceptionHandler(
+                    new ValidationException(Generators.buildErrorMessage(bindingResult)),
+                    request);
+        }
+
+        CountyRequest record;
+        try {
+
+            //check for county record
+            long recordId = county.getId();
+            CompletableFuture<Boolean> found = counties.countyExists(recordId);
+            boolean exists = found.join();
+            if(!exists){
+                logger.info(String.format("County with ID '%s' not found. Returned a 404 code - Resource not found", recordId));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("County","ID", recordId),
+                        request);
+            }
+
+            //check whether county name is not in use
+            String name = county.getCountyName();
+            logger.info(String.format("Checking whether County assigned name '%s' is not in use.", name));
+            CompletableFuture<Boolean> recordExists = this.counties.existsByNameAndNotId(name, recordId);
+            exists = recordExists.join();
+            if(exists){
+                logger.info(String.format("Resource Conflict! Another County with name '%s' exists", name));
+                return exceptionHandler.duplicatesResourceExceptionHandler(
+                        new DuplicateException("County", "Name", name),
+                        request);
+            }
+
+            //..update record
+            this.counties.update(county);
+            record = county;
+        } catch (Exception e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @PostMapping("/softDeleteCounty/{recordId}/{isDeleted}/{userId}")
+    public ResponseEntity<?> softDeleteCounty(@PathVariable Long recordId,
+                                              @PathVariable Boolean isDeleted,
+                                              @PathVariable("userId") long userId,
+                                              HttpServletRequest request){
+        logger.info(String.format("Mark County '%s' as deleted by user with id %s" ,recordId, userId));
+
+        try {
+
+            CompletableFuture<CountyRequest> futureRecord = counties.findCountyById(recordId);
+            CountyRequest record = futureRecord.join();
+            if(record == null){
+                logger.info(String.format("County with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId, userId));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("County","ID",recordId),
+                        request);
+            }
+
+            this.counties.softDelete(recordId, isDeleted);
+            return new ResponseEntity<>("County record updated successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+    }
+
+    @PutMapping("/deleteCounty/{recordId}/{userId}")
+    public ResponseEntity<?> deleteCounty(@PathVariable Long recordId,
+                                          @PathVariable("userId") long userId,
+                                          HttpServletRequest request){
+        logger.info(String.format("Delete County with ID '%s' by user with id %s",recordId, userId));
+        try {
+            CompletableFuture<CountyRequest> county = this.counties.findCountyById(recordId);
+            CountyRequest record = county.join();
+            if(record == null){
+                logger.info(String.format("County with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId ,userId));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("County","ID", recordId),
+                        request);
+            }
+
+            this.counties.delete(recordId);
+            return new ResponseEntity<>("County record deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+    }
+
+    //endregion
+
+    //region parishes
+
+    @GetMapping("/getParishById/{id}/{userId}")
+    public ResponseEntity<?> getParishById(@PathVariable("id") long id,
+                                           @PathVariable("userId") long userId,
+                                           HttpServletRequest request){
+
+        logger.info(String.format("Retrieve Parish with ID '%s' by user with id %s" ,id, userId));
+        ParishRequest record;
+        try {
+            CompletableFuture<ParishRequest> futureRecord = parishes.findParishById(id);
+            record = futureRecord.join();
+            if(record == null){
+                logger.info(String.format("Parish with id %s not found. Returned a 404 code - Resource not found", id));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("Parish","ID",id),
+                        request);
+            }
+
+            record = futureRecord.get();
+        } catch (InterruptedException e) {
+            return exceptionHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        if(record == null){
+            return exceptionHandler.resourceNotFoundExceptionHandler(
+                    new NotFoundException("Parish", "Id", String.format("%s", id)),
+                    request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @GetMapping("/ getParishByName/{name}/{userId}")
+    public ResponseEntity<?> getParishByName(@PathVariable("name") String name,
+                                             @PathVariable("userId") long userId,
+                                             HttpServletRequest request){
+        logger.info(String.format("Retrieve Parish with name '%s' by user with id %s" ,name, userId));
+        ParishRequest record;
+        try {
+            CompletableFuture<ParishRequest> futureRecord = parishes.findParishByName(name);
+            record = futureRecord.join();
+            if(record == null){
+                logger.info(String.format("Parish with name '%s' not found. Returned a 404 code - Resource not found", name));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("Parish","Name",name),
+                        request);
+            }
+        } catch (Exception e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @GetMapping("/getParishes/{userId}")
+    public ResponseEntity<?> getParishes(@PathVariable("userId") long userId, HttpServletRequest request){
+        logger.info(String.format("Retrieve all parishes by user with id %s",userId));
+
+        List<ParishRequest> records;
+        try {
+            CompletableFuture<List<ParishRequest>> parishRecords = parishes.getAllParishes();
+            records = parishRecords.get();
+
+            //...check for null records
+            if(records == null || records.isEmpty()){
+                logger.info("No records found in database");
+                records = new ArrayList<>();
+            }
+        } catch (InterruptedException e) {
+            logger.info("Thread Exception:: Action cancelled by user");
+            return exceptionHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
+
+    @GetMapping("/getActiveParishes/{userId}")
+    public ResponseEntity<?> getActiveParishes(@PathVariable("userId") long userId, HttpServletRequest request){
+        logger.info(String.format("Retrieve all parishes by user with id %s",userId));
+
+        List<ParishRequest> records;
+        try {
+            CompletableFuture<List<ParishRequest>> parishRecords = parishes.getActiveParishes();
+            records = parishRecords.get();
+
+            //...check for null records
+            if(records == null || records.isEmpty()){
+                logger.info("No records found in database");
+                records = new ArrayList<>();
+            }
+        } catch (InterruptedException e) {
+            logger.info("Thread Exception:: Action cancelled by user");
+            return exceptionHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
+
+    @PutMapping("/createParish/{userId}")
+    public ResponseEntity<?> createParish(@RequestBody @Valid ParishRequest parish,
+                                          @PathVariable("userId") long userId,
+                                          BindingResult bindingResult,
+                                          HttpServletRequest request){
+        logger.info(String.format("Create new parish by user with id %s", userId));
+
+        // Validate request object
+        if (bindingResult.hasErrors()) {
+            return exceptionHandler.validationExceptionHandler(
+                    new ValidationException(Generators.buildErrorMessage(bindingResult)),
+                    request);
+        }
+
+        ParishRequest record;
+        try {
+            //check whether parish name is not in use
+            String name = parish.getParishName();
+            logger.info(String.format("Checking whether parish assigned name '%s' is not in use.", name));
+            CompletableFuture<Boolean> recordExists = this.parishes.existsByName(name);
+            boolean exists = recordExists.join();
+            if(exists){
+                logger.info(String.format("Resource Conflict! Another parish with name '%s' exists", name));
+                return exceptionHandler.duplicatesResourceExceptionHandler(
+                        new DuplicateException("Parish", "Name", name),
+                        request);
+            }
+
+            //..return create record
+            CompletableFuture<ParishRequest> parishRecord = this.parishes.create(parish);
+            record = parishRecord.join();
+        } catch (Exception e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        if (record == null || record.getId() == 0) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException("An error occurred while saving Parish"),request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @PutMapping("/UpdateParish/{userId}")
+    public ResponseEntity<?> UpdateParish(@RequestBody @Valid ParishRequest parish,
+                                          @PathVariable("userId") long userId,
+                                          BindingResult bindingResult,
+                                          HttpServletRequest request){
+        logger.info(String.format("Modification of parish by user with id %s", userId));
+
+        // Validate request object
+        if (bindingResult.hasErrors()) {
+            return exceptionHandler.validationExceptionHandler(
+                    new ValidationException(Generators.buildErrorMessage(bindingResult)),
+                    request);
+        }
+
+        ParishRequest record;
+        try {
+
+            //check for parish record
+            long recordId = parish.getId();
+            CompletableFuture<Boolean> found = this.parishes.parishExists(recordId);
+            boolean exists = found.join();
+            if(!exists){
+                logger.info(String.format("Parish with ID '%s' not found. Returned a 404 code - Resource not found", recordId));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("Parish","ID", recordId),
+                        request);
+            }
+
+            //check whether parish name is not in use
+            String name = parish.getParishName();
+            logger.info(String.format("Checking whether Parish assigned name '%s' is not in use.", name));
+            CompletableFuture<Boolean> recordExists = this.parishes.existsByNameAndNotId(name, recordId);
+            exists = recordExists.join();
+            if(exists){
+                logger.info(String.format("Resource Conflict! Another Parish with name '%s' exists", name));
+                return exceptionHandler.duplicatesResourceExceptionHandler(
+                        new DuplicateException("Parish", "Name", name),
+                        request);
+            }
+
+            //..update record
+            this.parishes.update(parish);
+            record = parish;
+        } catch (Exception e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @PostMapping("/softDeleteParish/{recordId}/{isDeleted}/{userId}")
+    public ResponseEntity<?> softDeleteParish(@PathVariable Long recordId,
+                                              @PathVariable Boolean isDeleted,
+                                              @PathVariable("userId") long userId,
+                                              HttpServletRequest request){
+        logger.info(String.format("Mark Parish '%s' as deleted by user with id %s" ,recordId, userId));
+
+        try {
+
+            CompletableFuture<ParishRequest> futureRecord = this.parishes.findParishById(recordId);
+            ParishRequest record = futureRecord.join();
+            if(record == null){
+                logger.info(String.format("Parish with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId, userId));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("Parish","ID",recordId),
+                        request);
+            }
+
+            this.parishes.softDelete(recordId, isDeleted);
+            return new ResponseEntity<>("Parish record updated successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+    }
+
+    @PutMapping("/deleteParish/{recordId}/{userId}")
+    public ResponseEntity<?> deleteParish(@PathVariable Long recordId,
+                                          @PathVariable("userId") long userId,
+                                          HttpServletRequest request){
+        logger.info(String.format("Delete Parish with ID '%s' by user with id %s",recordId, userId));
+        try {
+            CompletableFuture<ParishRequest> parish = this.parishes.findParishById(recordId);
+            ParishRequest record = parish.join();
+            if(record == null){
+                logger.info(String.format("Parish with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId ,userId));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("Parish","ID", recordId),
+                        request);
+            }
+
+            this.parishes.delete(recordId);
+            return new ResponseEntity<>("Parish record deleted successfully", HttpStatus.OK);
         } catch (Exception e) {
             String msg = e.getMessage();
             logger.error(String.format("General Error:: %s", msg));
@@ -2967,6 +3507,267 @@ public class AgentController {
 
             districts.delete(recordId);
             return new ResponseEntity<>("District record deleted successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+    }
+
+    //endregion
+
+    //region Nature of business
+
+    @GetMapping("/getNatureOfBusinessById/{id}/{userId}")
+    public ResponseEntity<?> getNatureOfBusinessById(@PathVariable("id") long id,
+                                           @PathVariable("userId") long userId,
+                                           HttpServletRequest request){
+
+        logger.info(String.format("Retrieve Business Nature with ID '%s' by user with id %s" ,id, userId));
+        BusinessNatureRequest record;
+        try {
+            CompletableFuture<BusinessNatureRequest> futureRecord = this.natureService.findBusinessNatureById(id);
+            record = futureRecord.join();
+            if(record == null){
+                logger.info(String.format("Business Nature with id %s not found. Returned a 404 code - Resource not found", id));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("BusinessNature","ID",id),
+                        request);
+            }
+
+            record = futureRecord.get();
+        } catch (InterruptedException e) {
+            return exceptionHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        if(record == null){
+            return exceptionHandler.resourceNotFoundExceptionHandler(
+                    new NotFoundException("BusinessNature", "Id", String.format("%s", id)),
+                    request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @GetMapping("/ getNatureOfBusinessByName/{nature}/{userId}")
+    public ResponseEntity<?> getNatureOfBusinessByName(@PathVariable("nature") String nature,
+                                             @PathVariable("userId") long userId,
+                                             HttpServletRequest request){
+        logger.info(String.format("Retrieve BusinessNature with name '%s' by user with id %s" ,nature, userId));
+        BusinessNatureRequest record;
+        try {
+            CompletableFuture<BusinessNatureRequest> futureRecord = this.natureService.findBusinessNatureByNature(nature);
+            record = futureRecord.join();
+            if(record == null){
+                logger.info(String.format("BusinessNature with name '%s' not found. Returned a 404 code - Resource not found", nature));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("BusinessNature","Name",nature),
+                        request);
+            }
+        } catch (Exception e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @GetMapping("/getNatureOfBusiness/{userId}")
+    public ResponseEntity<?> getNatureOfBusiness(@PathVariable("userId") long userId, HttpServletRequest request){
+        logger.info(String.format("Retrieve all parishes by user with id %s",userId));
+
+        List<ParishRequest> records;
+        try {
+            CompletableFuture<List<ParishRequest>> parishRecords = parishes.getAllParishes();
+            records = parishRecords.get();
+
+            //...check for null records
+            if(records == null || records.isEmpty()){
+                logger.info("No records found in database");
+                records = new ArrayList<>();
+            }
+        } catch (InterruptedException e) {
+            logger.info("Thread Exception:: Action cancelled by user");
+            return exceptionHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
+
+    @GetMapping("/getActiveNatureOfBusiness/{userId}")
+    public ResponseEntity<?> getActiveNatureOfBusiness(@PathVariable("userId") long userId, HttpServletRequest request){
+        logger.info(String.format("Retrieve all BusinessNature by user with id %s",userId));
+
+        List<BusinessNatureRequest> records;
+        try {
+            CompletableFuture<List<BusinessNatureRequest>> natureRecords = this.natureService.getActiveBusinessNatures();
+            records = natureRecords.get();
+
+            //...check for null records
+            if(records == null || records.isEmpty()){
+                logger.info("No records found in database");
+                records = new ArrayList<>();
+            }
+        } catch (InterruptedException e) {
+            logger.info("Thread Exception:: Action cancelled by user");
+            return exceptionHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
+
+    @PutMapping("/createNatureOfBusiness/{userId}")
+    public ResponseEntity<?> createNatureOfBusiness(@RequestBody @Valid BusinessNatureRequest businessNature,
+                                          @PathVariable("userId") long userId,
+                                          BindingResult bindingResult,
+                                          HttpServletRequest request){
+        logger.info(String.format("Create new BusinessNature by user with id %s", userId));
+
+        // Validate request object
+        if (bindingResult.hasErrors()) {
+            return exceptionHandler.validationExceptionHandler(
+                    new ValidationException(Generators.buildErrorMessage(bindingResult)),
+                    request);
+        }
+
+        BusinessNatureRequest record;
+        try {
+            //check whether BusinessNature name is not in use
+            String name = businessNature.getNature();
+            logger.info(String.format("Checking whether parish assigned name '%s' is not in use.", name));
+            CompletableFuture<Boolean> recordExists = this.parishes.existsByName(name);
+            boolean exists = recordExists.join();
+            if(exists){
+                logger.info(String.format("Resource Conflict! Another BusinessNature with name '%s' exists", name));
+                return exceptionHandler.duplicatesResourceExceptionHandler(
+                        new DuplicateException("BusinessNature", "Name", name),
+                        request);
+            }
+
+            //..return create record
+            CompletableFuture<BusinessNatureRequest> natureRecord = this.natureService.create(businessNature);
+            record = natureRecord.join();
+        } catch (Exception e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        if (record == null || record.getId() == 0) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException("An error occurred while saving BusinessNature"),request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @PutMapping("/UpdateNatureOfBusiness/{userId}")
+    public ResponseEntity<?> UpdateNatureOfBusiness(@RequestBody @Valid BusinessNatureRequest businessNature,
+                                          @PathVariable("userId") long userId,
+                                          BindingResult bindingResult,
+                                          HttpServletRequest request){
+        logger.info(String.format("Modification of BusinessNature by user with id %s", userId));
+
+        // Validate request object
+        if (bindingResult.hasErrors()) {
+            return exceptionHandler.validationExceptionHandler(
+                    new ValidationException(Generators.buildErrorMessage(bindingResult)),
+                    request);
+        }
+
+        BusinessNatureRequest record;
+        try {
+
+            //check for BusinessNature record
+            long recordId = businessNature.getId();
+            CompletableFuture<Boolean> found = this.natureService.businessNatureExists(recordId);
+            boolean exists = found.join();
+            if(!exists){
+                logger.info(String.format("BusinessNature with ID '%s' not found. Returned a 404 code - Resource not found", recordId));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("BusinessNature","ID", recordId),
+                        request);
+            }
+
+            //check whether BusinessNature name is not in use
+            String name = businessNature.getNature();
+            logger.info(String.format("Checking whether BusinessNature assigned name '%s' is not in use.", name));
+            CompletableFuture<Boolean> recordExists = this.natureService.existsByNatureAndNotId(name, recordId);
+            exists = recordExists.join();
+            if(exists){
+                logger.info(String.format("Resource Conflict! Another BusinessNature with name '%s' exists", name));
+                return exceptionHandler.duplicatesResourceExceptionHandler(
+                        new DuplicateException("BusinessNature", "Name", name),
+                        request);
+            }
+
+            //..update record
+            this.natureService.update(businessNature);
+            record = businessNature;
+        } catch (Exception e) {
+            return exceptionHandler.errorHandler(
+                    new GeneralException(e.getMessage()),request);
+        }
+
+        return new ResponseEntity<>(record, HttpStatus.OK);
+    }
+
+    @PostMapping("/softDeleteNatureOfBusiness/{recordId}/{isDeleted}/{userId}")
+    public ResponseEntity<?> softDeleteNatureOfBusiness(@PathVariable Long recordId,
+                                              @PathVariable Boolean isDeleted,
+                                              @PathVariable("userId") long userId,
+                                              HttpServletRequest request){
+        logger.info(String.format("Mark BusinessNature '%s' as deleted by user with id %s" ,recordId, userId));
+
+        try {
+            CompletableFuture<BusinessNatureRequest> futureRecord = this.natureService.findBusinessNatureById(recordId);
+            BusinessNatureRequest record = futureRecord.join();
+            if(record == null){
+                logger.info(String.format("BusinessNature with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId, userId));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("BusinessNature","ID",recordId),
+                        request);
+            }
+
+            this.natureService.softDelete(recordId, isDeleted);
+            return new ResponseEntity<>("BusinessNature record updated successfully", HttpStatus.OK);
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+    }
+    @PutMapping("/deleteNatureOfBusiness/{recordId}/{userId}")
+    public ResponseEntity<?> deleteNatureOfBusiness(@PathVariable Long recordId,
+                                          @PathVariable("userId") long userId,
+                                          HttpServletRequest request){
+        logger.info(String.format("Delete BusinessNature with ID '%s' by user with id %s",recordId, userId));
+        try {
+            CompletableFuture<BusinessNatureRequest> nature = this.natureService.findBusinessNatureById(recordId);
+            BusinessNatureRequest record = nature.join();
+            if(record == null){
+                logger.info(String.format("BusinessNature with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found",recordId ,userId));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("BusinessNature","ID", recordId),
+                        request);
+            }
+
+            this.natureService.delete(recordId);
+            return new ResponseEntity<>("BusinessNature record deleted successfully", HttpStatus.OK);
         } catch (Exception e) {
             String msg = e.getMessage();
             logger.error(String.format("General Error:: %s", msg));

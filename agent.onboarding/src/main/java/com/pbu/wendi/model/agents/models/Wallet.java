@@ -16,26 +16,26 @@ import java.util.Objects;
 @SuperBuilder
 @Entity
 @ToString(callSuper=true)
-public class Outlet  extends DomainEntity {
+public class Wallet extends DomainEntity {
     @Column(length = 200, nullable=false)
-    private String outletName;
+    private String walletName;
 
-    public Outlet() {
+    public Wallet() {
         super();
     }
 
-    @OneToMany(mappedBy = "outlet", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER)
     private List<BusinessAgent> businesses;
 
-    @OneToMany(mappedBy = "outlet", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "wallet", fetch = FetchType.EAGER)
     private List<IndividualAgent> persons;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Outlet that = (Outlet) o;
-        return !getOutletName().equals("") && Objects.equals(getOutletName(), that.getOutletName());
+        Wallet that = (Wallet) o;
+        return !getWalletName().equals("") && Objects.equals(getWalletName(), that.getWalletName());
     }
 
     @Override

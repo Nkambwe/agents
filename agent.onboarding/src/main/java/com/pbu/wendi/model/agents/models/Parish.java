@@ -1,39 +1,34 @@
 package com.pbu.wendi.model.agents.models;
-
 import com.pbu.wendi.utils.DomainEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.Hibernate;
 
-import java.util.List;
 import java.util.Objects;
 
 @Data
 @SuperBuilder
 @Entity
 @ToString(callSuper=true)
-public class District extends DomainEntity {
+public class Parish extends DomainEntity {
     @Column(length = 200, nullable=false)
-    private String districtName;
+    private String parishName;
 
-    public District() {
+    public Parish() {
         super();
     }
 
-    @OneToMany(mappedBy = "district", fetch = FetchType.EAGER)
-    private List<County> counties;
+    @ManyToOne
+    private County county;
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        District that = (District) o;
-        return !getDistrictName().equals("") && Objects.equals(getDistrictName(), that.getDistrictName());
+        Parish that = (Parish) o;
+        return !getParishName().equals("") && Objects.equals(getParishName(), that.getParishName());
     }
 
     @Override
