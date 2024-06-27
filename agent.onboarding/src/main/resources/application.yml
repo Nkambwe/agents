@@ -1,0 +1,20 @@
+server:
+  port: 5280
+
+spring:
+  application:
+    name: wendi.agents
+  datasource:
+    username: 'postgres'
+    password: 'skylite=2011'
+    url: jdbc:postgresql://localhost:5432/pbu_agents
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: 'true'
+    show-sql: true
+    hibernate:
+      ddl-auto: update
