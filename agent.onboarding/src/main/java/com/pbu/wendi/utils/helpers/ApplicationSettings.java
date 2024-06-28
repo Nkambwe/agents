@@ -63,13 +63,22 @@ public class ApplicationSettings {
         s6.setDeleted(false);
         settings.add(s6);
 
-        SettingsRequest s7;
+        SettingsRequest s7;//LOGIN_ATTEMPTS
         s7 = new SettingsRequest();
         s7.setDeleted(false);
         s7.setDescription("Number of days it takes for a password to expire");
         s7.setParamName(AppConstants.EXPRIREPWD_DAYS);
         s7.setParamValue("30");
         s7.setDeleted(false);
+        settings.add(s7);
+
+        SettingsRequest s8;
+        s8 = new SettingsRequest();
+        s8.setDeleted(false);
+        s8.setDescription("Number of attempts a user is allowed to retry before deactivating their account");
+        s8.setParamName(AppConstants.LOGIN_ATTEMPTS);
+        s8.setParamValue("30");
+        s8.setDeleted(false);
         settings.add(s7);
         return settings;
     }

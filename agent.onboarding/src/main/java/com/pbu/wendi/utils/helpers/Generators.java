@@ -1,5 +1,6 @@
 package com.pbu.wendi.utils.helpers;
 
+import com.pbu.wendi.requests.agents.dto.SettingsRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.common.Secure;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -9,11 +10,111 @@ import org.springframework.validation.FieldError;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Generators {
+    /*Generate a list of parameters for system login*/
+    public static List<String> loginParams(){
+        List<String> settingsParams = new ArrayList<>();
+        settingsParams.add(AppConstants.TIMEOUT);
+        settingsParams.add(AppConstants.EXPRIREPWD);
+        settingsParams.add(AppConstants.EXPRIREPWD_DAYS);
+        settingsParams.add(AppConstants.LOGIN_ATTEMPTS);
+
+        return settingsParams;
+    }
+
+    public static int getAttempts(List<SettingsRequest> loginSettings){
+        final int[] attemptArrays = {999};
+        loginSettings.stream()
+                .filter(m -> AppConstants.EXPRIREPWD.equals(m.getParamName()))
+                .findFirst()
+                .ifPresent(s -> {
+                    String paramValue = s.getParamValue();
+                    if (paramValue != null) {
+                        try {
+                            attemptArrays[0] = Integer.parseInt(paramValue);
+                        } catch (NumberFormatException e) {
+                            // Log the error if needed and keep the default value
+                        }
+                    }
+                });
+        return attemptArrays[0];
+    }
+
+    public static int getTimeout(List<SettingsRequest> loginSettings){
+        final int[] timeout = {999};
+        loginSettings.stream()
+                .filter(m -> AppConstants.TIMEOUT.equals(m.getParamName()))
+                .findFirst()
+                .ifPresent(s -> {
+                    String paramValue = s.getParamValue();
+                    if (paramValue != null) {
+                        try {
+                            timeout[0] = Integer.parseInt(paramValue);
+                        } catch (NumberFormatException e) {
+                            // Log the error if needed and keep the default value
+                        }
+                    }
+                });
+        return timeout[0];
+    }
+
+    public static int getExpiryDays(List<SettingsRequest> loginSettings){
+        final int[] days = {999};
+        loginSettings.stream()
+                .filter(m -> AppConstants.EXPRIREPWD_DAYS.equals(m.getParamName()))
+                .findFirst()
+                .ifPresent(s -> {
+                    String paramValue = s.getParamValue();
+                    if (paramValue != null) {
+                        try {
+                            days[0] = Integer.parseInt(paramValue);
+                        } catch (NumberFormatException e) {
+                            // Log the error if needed and keep the default value
+                        }
+                    }
+                });
+        return days[0];
+    }
+
+    public static boolean getExpireStatus(List<SettingsRequest> loginSettings) {
+        final boolean[] expire = {false};
+        loginSettings.stream()
+                .filter(m -> AppConstants.EXPRIREPWD.equals(m.getParamName()))
+                .findFirst()
+                .ifPresent(s -> {
+                    String paramValue = s.getParamValue();
+                    if (paramValue != null) {
+                        try {
+                            expire[0] = Boolean.parseBoolean(paramValue);
+                        } catch (Exception e) {
+                            // Log the error if needed and keep the default value
+                        }
+                    }
+                });
+
+        return expire[0];
+    }
+
+    public static int calculatePasswordExpiry(LocalDateTime lastDate, int setDays){
+        // Default days
+        int expireDays = 30;
+        try {
+            LocalDateTime now = LocalDateTime.now();
+            int daysPassed = (int) Duration.between(lastDate, now).toDays();
+            expireDays = Math.max(setDays - daysPassed, 0);
+        } catch (NumberFormatException e) {
+            // Log or handle the exception
+        }
+
+        return expireDays;
+    }
+
     /*Generate the string equivalent of the current date*/
     public static String currentDate() {
         LocalDateTime currentDateTime = LocalDateTime.now();

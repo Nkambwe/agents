@@ -19,6 +19,7 @@ public class UserRequest {
     private LocalDateTime createdOn;
     private String modifiedBy;
     private LocalDateTime modifiedOn;
+    private LocalDateTime lastPasswordChange;
     private long roleId;
     private long branchId;
     private boolean isDeleted;
@@ -173,6 +174,14 @@ public class UserRequest {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public LocalDateTime getLastPasswordChange() {
+        return lastPasswordChange;
+    }
+
+    public void setLastPasswordChange(LocalDateTime lastPasswordChange) {
+        this.lastPasswordChange = lastPasswordChange;
     }
 }
 

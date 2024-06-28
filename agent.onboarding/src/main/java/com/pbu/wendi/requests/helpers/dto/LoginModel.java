@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class LoginModel {
-
     private long id;
     private String username;
     private String firstname;
