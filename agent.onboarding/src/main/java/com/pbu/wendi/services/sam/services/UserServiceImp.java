@@ -162,8 +162,16 @@ public class UserServiceImp implements UserService {
             if(user != null){
                 request = this.mapper.map(user, UserRequest.class);
                 Role role = user.getRole();
-                if(role != null){
+                if(role != null && request.getRoleId() == 0){
                     request.setRoleId(role.getId());
+                    request.setRoleName(role.getName());
+                }
+
+                Branch branch = user.getBranch();
+                if(branch != null && request.getBranchId() == 0){
+                    request.setBranchId(branch.getId());
+                    request.setBranchSolId(branch.getSolId());
+                    request.setBranchName(branch.getBranchName());
                 }
             }
             return CompletableFuture.completedFuture(request);
@@ -398,6 +406,21 @@ public class UserServiceImp implements UserService {
             throw new GeneralException(String.format("%s", ex.getMessage()));
         }
     }
+
+    @Override
+    public void setLoginStatus(long id, boolean loggedIn, String lastLoginOn){
+        logger.info("update user login status");
+        try{
+            users.updateisLoggedInById(id, loggedIn, lastLoginOn);
+        } catch(Exception ex){
+            logger.info("An error occurred in method 'setLoginStatus' in 'UserService'");
+            logger.error(ex.getMessage());
+            logger.info("Stacktrace::");
+            logger.stackTrace(Arrays.toString(ex.getStackTrace()));
+            throw new GeneralException(String.format("%s", ex.getMessage()));
+        }
+    }
+
     @Override
     public void softDelete(long id, boolean isDeleted) {
         logger.info("Soft delete user record");

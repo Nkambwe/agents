@@ -1,10 +1,10 @@
 package com.pbu.wendi.controllers;
 
 import com.pbu.wendi.configurations.ApplicationExceptionHandler;
-import com.pbu.wendi.requests.agents.dto.KinRequest;
 import com.pbu.wendi.requests.agents.dto.SettingsRequest;
 import com.pbu.wendi.requests.helpers.dto.LoginModel;
 import com.pbu.wendi.requests.sam.dto.LogRequest;
+import com.pbu.wendi.requests.sam.dto.PermissionRequest;
 import com.pbu.wendi.requests.sam.dto.UserRequest;
 import com.pbu.wendi.services.agents.services.SettingService;
 import com.pbu.wendi.services.sam.services.*;
@@ -14,7 +14,6 @@ import com.pbu.wendi.utils.exceptions.ClientException;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import com.pbu.wendi.utils.exceptions.NotFoundException;
 import com.pbu.wendi.utils.exceptions.ValidationException;
-import com.pbu.wendi.utils.helpers.AppConstants;
 import com.pbu.wendi.utils.helpers.Generators;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -35,38 +35,26 @@ public class LoginController {
     private final AppLoggerService logger;
     private final ApplicationExceptionHandler exceptionHandler;
     private final NetworkService networkService;
-    private final AppService appService;
     private final SettingService settingsService;
     private final PermissionService permissionService;
-    private final SetService setService;
     private final UserService userService;
-    private final RoleService roleService;
-    private final BranchService branchService;
     private final LogService logService;
 
     public LoginController(ModelMapper mapper,
                            AppLoggerService logger,
                            ApplicationExceptionHandler exceptionHandler,
                            NetworkService networkService,
-                           AppService appService,
                            SettingService settingsService,
                            PermissionService permissionService,
-                           SetService setService,
                            UserService userService,
-                           RoleService roleService,
-                           BranchService branchService,
                            LogService logService) {
         this.mapper = mapper;
         this.logger = logger;
         this.exceptionHandler = exceptionHandler;
         this.networkService = networkService;
-        this.appService = appService;
         this.settingsService = settingsService;
         this.permissionService = permissionService;
-        this.setService = setService;
         this.userService = userService;
-        this.roleService = roleService;
-        this.branchService = branchService;
         this.logService = logService;
     }
 
@@ -156,16 +144,34 @@ public class LoginController {
 
             //..try login
             if(loginAttempts <= attempts){
-                //TODO..validate password
+                //..validate password
+                boolean isMatched = Generators.isPasswordMatch(password, user.getPassword(), logger);
+                if(!isMatched){
+                    logService.create(generateLog(user.getId(), ip, String.format("ACCESS DENIED :: Account with Username '%s' provided wrong password", userName)));
+                    logger.info("LOGIN FAILED :: Attempt to login with wrong password");
+                    return exceptionHandler.clientErrorHandler(new ClientException("Password is not correct. Please enter correct password and try again"), request);
+                }
 
-                int expiresIn = Generators.calculatePasswordExpiry(user.getLastPasswordChange(), Generators.getExpiryDays(loginSettings));
+                int expiresIn = Generators.calculateDaysLeft(user.getLastPasswordChange(), Generators.getExpiryDays(loginSettings));
                 login.setExpirePassword(Generators.getExpireStatus(loginSettings));
                 login.setExpiresIn(expiresIn);
                 login.setTimeout(Generators.getTimeout(loginSettings));
 
-                //TODO..Set branch and branch name
+                //...add roles permissions
+                if(user.getRoleId() != 0){
+                    CompletableFuture<List<PermissionRequest>> permissionRecords = permissionService.findPermissionsByRoleId(user.getRoleId());
+                    List<PermissionRequest> permissions = permissionRecords.get();
+                    if(permissions != null && !permissions.isEmpty()){
+                        List<String> grants = new ArrayList<>();
+                        for (PermissionRequest permission: permissions) {
+                            grants.add(permission.getName());
+                        }
+                        login.setPermissions(grants);
+                    }
+                }
 
-                //TODO..add roles and permissions
+                //...update logged in status
+                this.userService.setLoginStatus(user.getId(), true, currentDate);
             } else {
                 //...deactivate user account
                 this.userService.setActiveStatus(user.getId(), false, "SAM", currentDate);
@@ -180,6 +186,128 @@ public class LoginController {
 
         //return branch record
         return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+    @GetMapping("/logout/{userId}/{userName}")
+    public ResponseEntity<?> logout(@PathVariable("userId") long userId,
+                                    @PathVariable("userName") String userName,
+                                    HttpServletRequest request){
+        // current date and time
+        String currentDate = Generators.currentDate();
+
+        //Network IP Address
+        String ip = networkService.getIncomingIpAddress(request);
+        String logMsg = String.format("SAM LOGOUT :: System logout at '%s' by username '%s' from IP Address :: %s", currentDate, userName, ip);
+        logService.create(generateLog(0, ip, logMsg));
+        logger.info(logMsg);
+        try{
+            //...update logged in status
+            this.userService.setLoginStatus(userId, false, currentDate);
+        } catch(Exception ex){
+            String msg = ex.getMessage();
+            logger.error(String.format("General exception:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException("Failed to logout user. An error occurred"), request);
+        }
+
+        return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
+    }
+
+    @GetMapping("/passwordReset/{userId}/{oldPassword}/{newPassword}/{confirmPassword}")
+    public ResponseEntity<?> passwordReset(@PathVariable("userId") long userId,
+                                           @PathVariable("oldPassword") String oldPassword,
+                                           @PathVariable("newPassword") String newPassword,
+                                           @PathVariable("confirmPassword") String confirmPassword,
+                                           HttpServletRequest request){
+                // current date and time
+                String currentDate = Generators.currentDate();
+
+                //Network IP Address
+                String ip = networkService.getIncomingIpAddress(request);
+                String logMsg = String.format("SAM PASSWORD_CHANGE :: Request for password reset for user ID'%s' from IP Address :: %s at '%s'", userId, ip, currentDate);
+                logService.create(generateLog(0, ip, String.format("Password change for user ID '%s'", userId)));
+                logger.info(logMsg);
+                try{
+                    //Retrieve record
+                    CompletableFuture<UserRequest> userRecord = this.userService.findById(userId);
+                    UserRequest user = userRecord.join();
+
+                    //Record not found, throw NOT_FOUND response
+                    if(user == null) {
+                        logger.info(String.format("NOT FOUND :: User with User ID '%s' not found. Returned a 404 code - Resource not found", userId));
+                        return exceptionHandler.resourceNotFoundExceptionHandler(
+                                new NotFoundException("User","ID",userId),
+                                request);
+                    }
+
+                    //...make sure old password is the same
+                    if(oldPassword != null && !oldPassword.equals("")){
+                        logger.info("SAM PASSWORD_CHANGE :: Attempt to change password failed. Old password not provided");
+                        return exceptionHandler.clientErrorHandler(new ClientException("Old Password is required. Please enter old password and try again"), request);
+                    }
+
+                    boolean isMatched = Generators.isPasswordMatch(oldPassword, user.getPassword(), logger);
+                    if(!isMatched){
+                        logger.info("SAM PASSWORD_CHANGE :: Attempt to change password failed. Wrong old password provided");
+                        return exceptionHandler.clientErrorHandler(new ClientException("Old Password is not correct. Please enter correct password and try again"), request);
+                    }
+
+                    String nPwd = newPassword.trim();
+                    String cPwd = confirmPassword.trim();
+                    if(!nPwd.equals(cPwd)){
+                        logger.info("PASSWORD MISS_MATCH :: User passwords do not match");
+                        return exceptionHandler.clientErrorHandler(new ClientException("Your passwords do not match. Please enter correct password and try again"), request);
+                    }
+
+                    //hash password
+                    String  passwordHash = Generators.getHashedPassword(nPwd, logger);
+                    userService.updatePassword(userId, passwordHash);
+
+                } catch(Exception ex){
+                    String msg = ex.getMessage();
+                    logger.error(String.format("General exception:: %s", msg));
+                    return exceptionHandler.errorHandler(new GeneralException("Failed to logout user. An error occurred"), request);
+                }
+
+                return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
+            }
+
+    @GetMapping("/forgotPassword/{email}")
+    public ResponseEntity<?> forgotPassword( @PathVariable("email") String email, HttpServletRequest request){
+        // current date and time
+        String currentDate = Generators.currentDate();
+
+        //Network IP Address
+        String  pwd ="";
+        String ip = networkService.getIncomingIpAddress(request);
+        String logMsg = String.format("SAM FORGOTTEN_PASSWORD :: Request for system password reset at '%s' by email '%s' from IP Address :: %s", currentDate, email, ip);
+        logger.info(logMsg);
+        logService.create(generateLog(0, ip, String.format("Request for system password reset at '%s' by email '%s' from IP Address :: %s", currentDate, email, ip)));
+
+        try{
+            //Retrieve record
+            CompletableFuture<UserRequest> userRecord = this.userService.findByEmail(email);
+            UserRequest user = userRecord.join();
+
+            //Record not found, throw NOT_FOUND response
+            if(user == null) {
+                logger.info(String.format("NOT FOUND :: User with Email '%s' not found. Returned a 404 code - Resource not found", email));
+                return exceptionHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("User","Email",email),
+                        request);
+            }
+
+            //...reset user password to system reset password
+            pwd = Generators.generateTempPassword();
+            userService.updatePassword(user.getId(), Generators.getHashedPassword(pwd, logger));
+
+            //TODO..Send new password via email
+
+        } catch(Exception ex){
+            String msg = ex.getMessage();
+            logger.error(String.format("General exception:: %s", msg));
+            return exceptionHandler.errorHandler(new GeneralException("System Password reset failed. An error occurred and process was cancelled"), request);
+        }
+
+        return new ResponseEntity<>(pwd, HttpStatus.OK);
     }
 
     //region protected methods

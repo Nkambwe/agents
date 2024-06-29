@@ -12,6 +12,7 @@ public class UserRequest {
     private String email;
     private String password;
     private boolean isLoggedIn;
+    private LocalDateTime lastLoginOn;
     private boolean isActive;
     private boolean isVerified;
     private String verifiedBy;
@@ -21,7 +22,10 @@ public class UserRequest {
     private LocalDateTime modifiedOn;
     private LocalDateTime lastPasswordChange;
     private long roleId;
+    private String roleName;
     private long branchId;
+    private String branchSolId;
+    private String branchName;
     private boolean isDeleted;
 
     public long getId() {
@@ -96,6 +100,14 @@ public class UserRequest {
         isLoggedIn = loggedIn;
     }
 
+    public LocalDateTime getLastLoginOn() {
+        return lastLoginOn;
+    }
+
+    public void setLastLoginOn(LocalDateTime lastLoginOn) {
+        this.lastLoginOn = lastLoginOn;
+    }
+
     public boolean isActive() {
         return isActive;
     }
@@ -160,12 +172,36 @@ public class UserRequest {
         this.roleId = roleId;
     }
 
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
     public long getBranchId() {
         return branchId;
     }
 
     public void setBranchId(long branchId) {
         this.branchId = branchId;
+    }
+
+    public String getBranchSolId() {
+        return branchSolId;
+    }
+
+    public void setBranchSolId(String branchSolId) {
+        this.branchSolId = branchSolId;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
     }
 
     public boolean isDeleted() {

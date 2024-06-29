@@ -1662,6 +1662,15 @@ public class SamController {
                         request);
             }
 
+            //hash use password if provided
+            String passwordHash;
+            if(user.getPassword() != null || !user.getPassword().equals("")){
+                passwordHash = Generators.getHashedPassword(user.getPassword().trim(), logger);
+            } else {
+                passwordHash = Generators.getHashedPassword("Password10!", logger);
+            }
+            user.setPassword(passwordHash);
+
             //...check if branch exists
             long branchId = user.getBranchId();
             boolean branchFound = this.branchService.checkIfExistsById(branchId);

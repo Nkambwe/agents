@@ -101,7 +101,7 @@ public class Generators {
         return expire[0];
     }
 
-    public static int calculatePasswordExpiry(LocalDateTime lastDate, int setDays){
+    public static int calculateDaysLeft(LocalDateTime lastDate, int setDays){
         // Default days
         int expireDays = 30;
         try {
@@ -198,6 +198,18 @@ public class Generators {
             codeStr = String.format("%04d", code);
         }
         return codeStr;
+    }
+
+    public static String generateTempPassword() {
+        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@^#%";
+        final SecureRandom RANDOM = new SecureRandom();
+
+        StringBuilder password = new StringBuilder(6);
+        for (int i = 0; i < 6; i++) {
+            int index = RANDOM.nextInt(CHARACTERS.length());
+            password.append(CHARACTERS.charAt(index));
+        }
+        return password.toString();
     }
 
     /*Generate error message from BindingResult object*/

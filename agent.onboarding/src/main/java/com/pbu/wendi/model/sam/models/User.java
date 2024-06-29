@@ -49,6 +49,9 @@ public class User extends DomainEntity {
     @Column(nullable = false)
     private boolean isLoggedIn;
 
+    @Column
+    private LocalDateTime lastLoginOn;
+
     @Column(nullable = false)
     private boolean isActive;
 

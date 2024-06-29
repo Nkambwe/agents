@@ -4032,7 +4032,7 @@ public class AgentController {
         }
 
     }
-    @GetMapping("/deleteSettings/{recordId}/{userId}")
+    @DeleteMapping("/deleteSettings/{recordId}/{userId}")
     public ResponseEntity<?> deleteSettings(@PathVariable Long recordId,
                                             @PathVariable("userId") long userId,
                                             HttpServletRequest request){

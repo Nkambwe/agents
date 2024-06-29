@@ -1,7 +1,7 @@
 version: '3'
 services:
-  postgres:
-    container_name: postgres
+  wendi_agents:
+    container_name: wendi_agents
     image: postgres:latest
     environment:
       POSTGRES_USER: postgres
@@ -26,6 +26,30 @@ services:
       - pgadmin:/var/lib/pgadmin
     ports:
       - "5050:80"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  app:
+    image: oraclelinux:8-slim
+    container_name: wendi_agents_app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://wendi_agents:5432/agents_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: skylite=2011
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+    volumes:
+      - ./target/spring-postures-docker-0.0.1-SNAPSHOT.jar:/app.jar
+    entrypoint: ["java","-jar","/app.jar"]
+    ports:
+      - "5280:5280"
+    depends_on:
+      - wendi_agents
     networks:
       - postgres
     restart: unless-stopped

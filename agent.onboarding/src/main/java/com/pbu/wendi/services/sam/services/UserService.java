@@ -26,6 +26,7 @@ public interface UserService {
     void update(UserRequest user, long roleId, long branchId);
     void updatePassword(long id, String password);
     void setActiveStatus(long id, boolean active, String modifiedBy, String modifiedOn);
+    void setLoginStatus(long id, boolean loggedIn, String lastLoginOn);
     void softDelete(long id, boolean status);
     void delete(long id);
 }

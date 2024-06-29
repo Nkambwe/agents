@@ -7,7 +7,7 @@ spring:
   datasource:
     username: 'postgres'
     password: 'skylite=2011'
-    url: jdbc:postgresql://localhost:5432/agents_db
+    url: jdbc:postgresql://localhost:5432/agents_db #jdbc:postgresql://wendi_agents:5432/agents_db --for docker
     driver-class-name: org.postgresql.Driver
 
   jpa:
