@@ -28,6 +28,11 @@ public class Generators {
         return settingsParams;
     }
 
+    public static String mailMsg(String name, String password){
+        return String.format("Dear,%s, <br/><br/> You've requested a password reset for Agent On boarding app. Use '%s' as a one time password. We advise that you reset your password as soon as you login.<br/><br/>" +
+                "Regards<br/><br/> Postbank", name, password);
+    }
+
     public static int getAttempts(List<SettingsRequest> loginSettings){
         final int[] attemptArrays = {999};
         loginSettings.stream()

@@ -9,6 +9,7 @@ import com.pbu.wendi.requests.sam.dto.UserRequest;
 import com.pbu.wendi.services.agents.services.SettingService;
 import com.pbu.wendi.services.sam.services.*;
 import com.pbu.wendi.utils.common.AppLoggerService;
+import com.pbu.wendi.utils.common.MailService;
 import com.pbu.wendi.utils.common.NetworkService;
 import com.pbu.wendi.utils.exceptions.ClientException;
 import com.pbu.wendi.utils.exceptions.GeneralException;
@@ -39,6 +40,7 @@ public class LoginController {
     private final PermissionService permissionService;
     private final UserService userService;
     private final LogService logService;
+    private final MailService mailService;
 
     public LoginController(ModelMapper mapper,
                            AppLoggerService logger,
@@ -47,7 +49,8 @@ public class LoginController {
                            SettingService settingsService,
                            PermissionService permissionService,
                            UserService userService,
-                           LogService logService) {
+                           LogService logService,
+                           MailService mailService) {
         this.mapper = mapper;
         this.logger = logger;
         this.exceptionHandler = exceptionHandler;
@@ -56,6 +59,7 @@ public class LoginController {
         this.permissionService = permissionService;
         this.userService = userService;
         this.logService = logService;
+        this.mailService = mailService;
     }
 
     @GetMapping("/login/{userName}/{password}/{attempts}")
@@ -299,8 +303,9 @@ public class LoginController {
             pwd = Generators.generateTempPassword();
             userService.updatePassword(user.getId(), Generators.getHashedPassword(pwd, logger));
 
-            //TODO..Send new password via email
-
+            //...Send new password via email
+            String msg = Generators.mailMsg(user.getFirstname(), pwd);
+            mailService.sendMultipleEmail(email, null, msg,"Wendi Agent App password reset", logger);
         } catch(Exception ex){
             String msg = ex.getMessage();
             logger.error(String.format("General exception:: %s", msg));
