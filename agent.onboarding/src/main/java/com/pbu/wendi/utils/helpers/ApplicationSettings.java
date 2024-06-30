@@ -1,7 +1,7 @@
 package com.pbu.wendi.utils.helpers;
 
 
-import com.pbu.wendi.requests.agents.dto.SettingsRequest;
+import com.pbu.wendi.utils.requests.agents.dto.SettingsRequest;
 
 import java.util.ArrayList;
 import java.util.List;

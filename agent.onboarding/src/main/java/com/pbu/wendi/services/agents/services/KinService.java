@@ -1,7 +1,7 @@
 package com.pbu.wendi.services.agents.services;
 
-import com.pbu.wendi.requests.agents.dto.IndividualRequest;
-import com.pbu.wendi.requests.agents.dto.KinRequest;
+import com.pbu.wendi.utils.requests.agents.dto.IndividualRequest;
+import com.pbu.wendi.utils.requests.agents.dto.KinRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

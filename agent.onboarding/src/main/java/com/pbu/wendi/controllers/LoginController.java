@@ -1,11 +1,11 @@
 package com.pbu.wendi.controllers;
 
 import com.pbu.wendi.configurations.ApplicationExceptionHandler;
-import com.pbu.wendi.requests.agents.dto.SettingsRequest;
-import com.pbu.wendi.requests.helpers.dto.LoginModel;
-import com.pbu.wendi.requests.sam.dto.LogRequest;
-import com.pbu.wendi.requests.sam.dto.PermissionRequest;
-import com.pbu.wendi.requests.sam.dto.UserRequest;
+import com.pbu.wendi.utils.requests.agents.dto.SettingsRequest;
+import com.pbu.wendi.utils.requests.helpers.dto.LoginModel;
+import com.pbu.wendi.utils.requests.sam.dto.LogRequest;
+import com.pbu.wendi.utils.requests.sam.dto.PermissionRequest;
+import com.pbu.wendi.utils.requests.sam.dto.UserRequest;
 import com.pbu.wendi.services.agents.services.SettingService;
 import com.pbu.wendi.services.sam.services.*;
 import com.pbu.wendi.utils.common.AppLoggerService;

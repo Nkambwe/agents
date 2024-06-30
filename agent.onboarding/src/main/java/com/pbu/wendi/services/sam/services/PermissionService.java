@@ -1,7 +1,7 @@
 package com.pbu.wendi.services.sam.services;
 
 
-import com.pbu.wendi.requests.sam.dto.PermissionRequest;
+import com.pbu.wendi.utils.requests.sam.dto.PermissionRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

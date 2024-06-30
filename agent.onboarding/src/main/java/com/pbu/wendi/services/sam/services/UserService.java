@@ -1,7 +1,7 @@
 package com.pbu.wendi.services.sam.services;
 
-import com.pbu.wendi.requests.sam.dto.LoginRequest;
-import com.pbu.wendi.requests.sam.dto.UserRequest;
+import com.pbu.wendi.utils.requests.sam.dto.LoginRequest;
+import com.pbu.wendi.utils.requests.sam.dto.UserRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

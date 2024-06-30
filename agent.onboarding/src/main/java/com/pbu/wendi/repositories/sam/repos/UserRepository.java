@@ -2,7 +2,6 @@ package com.pbu.wendi.repositories.sam.repos;
 
 import com.pbu.wendi.model.sam.models.User;
 import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -59,7 +58,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("UPDATE User u SET u.username = :#{#user.username}, u.isDeleted = :#{#user.isDeleted}," +
             "u.firstname = :#{#user.firstname}, u.lastname = :#{#user.lastname},u.gender = :#{#user.gender}," +
-            "u.pfNo = :#{#user.pfNo},u.email = :#{#user.email},u.password = :#{#user.password}," +
+            "u.pfNo = :#{#user.pfNo},u.email = :#{#user.email}," +
             "u.isLoggedIn = :#{#user.isLoggedIn},u.isActive = :#{#user.isActive},u.isVerified = :#{#user.isVerified}, " +
             "u.verifiedBy = :#{#user.verifiedBy},u.createdBy = :#{#user.createdBy},u.createdOn = :#{#user.createdOn}, " +
             "u.modifiedOn = :#{#user.modifiedOn},u.modifiedBy = :#{#user.modifiedBy},u.role.id = :#{#roleId}," +

@@ -1,6 +1,6 @@
 package com.pbu.wendi.services.agents.services;
 
-import com.pbu.wendi.requests.agents.dto.BankRequest;
+import com.pbu.wendi.utils.requests.agents.dto.BankRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

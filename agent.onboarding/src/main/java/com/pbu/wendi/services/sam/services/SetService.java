@@ -1,7 +1,8 @@
 package com.pbu.wendi.services.sam.services;
 
-import com.pbu.wendi.requests.sam.dto.SetRequest;
+import com.pbu.wendi.utils.requests.sam.dto.SetRequest;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public interface SetService {
@@ -9,6 +10,7 @@ public interface SetService {
     boolean checkNameDuplication(String name, long id);
     boolean descriptionInUse(String description);
     boolean checkDescriptionDuplication(String description, long id);
+    CompletableFuture<List<SetRequest>> findAll();
     CompletableFuture<SetRequest> findById(long id);
     CompletableFuture<SetRequest> findBySetName(String name);
     CompletableFuture<SetRequest> create(SetRequest permission);

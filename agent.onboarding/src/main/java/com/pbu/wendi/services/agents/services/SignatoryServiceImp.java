@@ -6,7 +6,7 @@ import com.pbu.wendi.model.agents.models.Signatory;
 import com.pbu.wendi.repositories.agents.repos.BusinessRepository;
 import com.pbu.wendi.repositories.agents.repos.IndividualRepository;
 import com.pbu.wendi.repositories.agents.repos.SignatoryRepository;
-import com.pbu.wendi.requests.agents.dto.SignatoryRequest;
+import com.pbu.wendi.utils.requests.agents.dto.SignatoryRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;

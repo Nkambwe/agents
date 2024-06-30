@@ -2,7 +2,7 @@ package com.pbu.wendi.services.sam.services;
 
 import com.pbu.wendi.model.sam.models.Permission;
 import com.pbu.wendi.repositories.sam.repos.PermissionRepository;
-import com.pbu.wendi.requests.sam.dto.PermissionRequest;
+import com.pbu.wendi.utils.requests.sam.dto.PermissionRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;

@@ -2,7 +2,7 @@ package com.pbu.wendi.services.agents.services;
 
 import com.pbu.wendi.model.agents.models.AgentSettings;
 import com.pbu.wendi.repositories.agents.repos.SettingRepository;
-import com.pbu.wendi.requests.agents.dto.SettingsRequest;
+import com.pbu.wendi.utils.requests.agents.dto.SettingsRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;

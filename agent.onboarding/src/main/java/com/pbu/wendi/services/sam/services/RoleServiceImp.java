@@ -4,8 +4,8 @@ import com.pbu.wendi.model.sam.models.PermissionSet;
 import com.pbu.wendi.model.sam.models.Role;
 import com.pbu.wendi.repositories.sam.repos.RoleRepository;
 import com.pbu.wendi.repositories.sam.repos.SetRepository;
-import com.pbu.wendi.requests.sam.dto.RoleRequest;
-import com.pbu.wendi.requests.sam.dto.SetRequest;
+import com.pbu.wendi.utils.requests.sam.dto.RoleRequest;
+import com.pbu.wendi.utils.requests.sam.dto.SetRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;
@@ -38,7 +38,7 @@ public class RoleServiceImp implements RoleService {
     public boolean exists(long roleId){
         logger.info(String.format("Checking whether roles with roleId '%s' exists",roleId));
         try{
-            return roles.existsById(roleId);
+            return roles.checkRole(roleId);
         } catch(Exception ex){
             logger.info("An error occurred in method 'existsById'");
             logger.error(ex.getMessage());

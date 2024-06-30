@@ -1,6 +1,6 @@
 package com.pbu.wendi.services.sam.services;
 
-import com.pbu.wendi.requests.sam.dto.LogRequest;
+import com.pbu.wendi.utils.requests.sam.dto.LogRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;

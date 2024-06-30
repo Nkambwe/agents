@@ -4,8 +4,8 @@ import com.pbu.wendi.model.sam.models.Permission;
 import com.pbu.wendi.model.sam.models.PermissionSet;
 import com.pbu.wendi.repositories.sam.repos.PermissionRepository;
 import com.pbu.wendi.repositories.sam.repos.SetRepository;
-import com.pbu.wendi.requests.sam.dto.PermissionRequest;
-import com.pbu.wendi.requests.sam.dto.SetRequest;
+import com.pbu.wendi.utils.requests.sam.dto.PermissionRequest;
+import com.pbu.wendi.utils.requests.sam.dto.SetRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;
@@ -81,6 +81,28 @@ public class SetServiceImp implements SetService {
             return sets.existsByDescriptionAndIdNot(description, id);
         } catch(Exception ex){
             logger.info("An error occurred in method 'checkDescriptionDuplication'");
+            logger.error(ex.getMessage());
+            logger.info("Stacktrace::");
+            logger.stackTrace(Arrays.toString(ex.getStackTrace()));
+            throw new GeneralException(String.format("%s", ex.getMessage()));
+        }
+    }
+
+    @Override
+    public CompletableFuture<List<SetRequest>> findAll(){
+        logger.info("Retrieving all permission sets");
+        List<SetRequest> records  = new ArrayList<>();
+        try{
+            List<PermissionSet> recordsList = sets.findAll();
+            if(!recordsList.isEmpty()){
+                for (PermissionSet record : recordsList) {
+                    records.add(this.mapper.map(record, SetRequest.class));
+                }
+            }
+
+            return CompletableFuture.completedFuture(records);
+        } catch(Exception ex){
+            logger.info("An error occurred in method 'findAll' in 'SetService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -218,6 +240,7 @@ public class SetServiceImp implements SetService {
 
             // Fetch new permissions and set them to the record
             if (permission.getPermissions() != null && !permission.getPermissions().isEmpty()) {
+                logger.info("Adding permission set permissions");
                 List<Long> permissionIds = permission.getPermissions().stream()
                         .map(PermissionRequest::getId)
                         .collect(Collectors.toList());

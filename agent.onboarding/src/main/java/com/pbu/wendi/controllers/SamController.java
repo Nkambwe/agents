@@ -1,12 +1,12 @@
 package com.pbu.wendi.controllers;
 
 import com.pbu.wendi.configurations.ApplicationExceptionHandler;
-import com.pbu.wendi.requests.sam.dto.*;
 import com.pbu.wendi.services.sam.services.*;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.common.NetworkService;
 import com.pbu.wendi.utils.exceptions.*;
 import com.pbu.wendi.utils.helpers.Generators;
+import com.pbu.wendi.utils.requests.sam.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -769,6 +769,39 @@ public class SamController {
     //endregion
 
     //region permission sets
+    @GetMapping("/getPermissionSet/{userId}")
+    public ResponseEntity<?> getPermissionSet(@PathVariable Long userId,
+                                            HttpServletRequest request){
+        logger.info(String.format("Retrieve all permissions sets by user with id %s", userId));
+        //try finding resource
+        String ip = networkService.getIncomingIpAddress(request);
+
+        List<SetRequest> records;
+        try {
+            //log user activity
+            logService.create(generateLog(userId, ip, String.format("Retrieve all permissions sets by user with id %s", userId)));
+
+            CompletableFuture<List<SetRequest>> futureRecord = setService.findAll();
+            records = futureRecord.get();
+        } catch (InterruptedException e) {
+            logger.info("Thread Exception:: Action cancelled by user");
+            return errorHandler.threadCanceledHandler(
+                    new CanceledException(e.getMessage()),request);
+        } catch (ExecutionException e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return errorHandler.errorHandler(new GeneralException(msg),request);
+        }
+
+        //...check for null records
+        if(records == null || records.isEmpty()){
+            logger.info("No records found in database");
+            records = new ArrayList<>();
+        }
+
+        return new ResponseEntity<>(records, HttpStatus.OK);
+    }
+
     @GetMapping("/getPermissionSetWithId/{setId}/{userId}")
     public ResponseEntity<?>getPermissionSetWithId(@PathVariable("setId") long setId,
                                                    @PathVariable("userId") long userId,
@@ -986,7 +1019,7 @@ public class SamController {
             }
 
             //..set permissions
-            ps = setService.update(permissionSet);
+            ps = setService.updateSetPermissions(permissionSet);
             record = ps.join();
         } catch(Exception ex){
             String msg = ex.getMessage();
@@ -1300,8 +1333,8 @@ public class SamController {
             }
 
             //check whether role Description is not in use
-            logger.info("Checking whether role assigned Description is not in use...");
             String descr = role.getDescription();
+            logger.info(String.format("Checking whether role assigned Description '%s' is not in use...",descr));
             exists = this.roleService.descriptionInUse(descr);
             if(exists){
                 logger.info(String.format("Resource Conflict! Another role with Description '%s' exists", descr));
@@ -1734,9 +1767,9 @@ public class SamController {
             CompletableFuture<UserRequest> userRecord = this.userService.findById(recordId);
             record = userRecord.join();
             if(record == null){
-                logger.info(String.format("Role with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found", recordId, userId));
+                logger.info(String.format("User with id '%s' retrieval by user with id '%s' failed. Returned a 404 code - Resource not found", recordId, userId));
                 return errorHandler.resourceNotFoundExceptionHandler(
-                        new NotFoundException("Role","RoleId",recordId),
+                        new NotFoundException("User","UserId",recordId),
                         request);
             }
 
@@ -1786,9 +1819,9 @@ public class SamController {
             long roleId = user.getRoleId();
             boolean roleFound = this.roleService.exists(roleId);
             if(!roleFound){
-                logger.info(String.format("Role with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found", roleId, userId));
+                logger.info(String.format("Role with id '%s' retrieval by user with id '%s' failed. Returned a 404 code - Resource not found", roleId, userId));
                 return errorHandler.resourceNotFoundExceptionHandler(
-                        new NotFoundException("Role","RoleId", branchId),
+                        new NotFoundException("Role","RoleId", roleId),
                         request);
             }
 

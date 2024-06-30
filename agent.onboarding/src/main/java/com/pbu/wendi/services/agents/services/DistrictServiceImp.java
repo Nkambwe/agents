@@ -2,7 +2,7 @@ package com.pbu.wendi.services.agents.services;
 
 import com.pbu.wendi.model.agents.models.District;
 import com.pbu.wendi.repositories.agents.repos.DistrictRepository;
-import com.pbu.wendi.requests.agents.dto.DistrictRequest;
+import com.pbu.wendi.utils.requests.agents.dto.DistrictRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;

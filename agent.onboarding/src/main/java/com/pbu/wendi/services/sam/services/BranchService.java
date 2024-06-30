@@ -1,6 +1,6 @@
 package com.pbu.wendi.services.sam.services;
 
-import com.pbu.wendi.requests.sam.dto.BranchRequest;
+import com.pbu.wendi.utils.requests.sam.dto.BranchRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

@@ -2,7 +2,7 @@ package com.pbu.wendi.services.agents.services;
 
 import com.pbu.wendi.model.agents.models.Affiliation;
 import com.pbu.wendi.repositories.agents.repos.AffiliationRepository;
-import com.pbu.wendi.requests.agents.dto.AffiliationRequest;
+import com.pbu.wendi.utils.requests.agents.dto.AffiliationRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import jakarta.transaction.Transactional;

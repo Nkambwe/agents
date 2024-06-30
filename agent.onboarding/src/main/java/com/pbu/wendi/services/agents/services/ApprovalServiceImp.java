@@ -6,7 +6,7 @@ import com.pbu.wendi.model.agents.models.IndividualAgent;
 import com.pbu.wendi.repositories.agents.repos.ApprovalRepository;
 import com.pbu.wendi.repositories.agents.repos.BusinessRepository;
 import com.pbu.wendi.repositories.agents.repos.IndividualRepository;
-import com.pbu.wendi.requests.agents.dto.ApprovalRequest;
+import com.pbu.wendi.utils.requests.agents.dto.ApprovalRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.enums.AgentType;
 import com.pbu.wendi.utils.enums.Status;

@@ -1,6 +1,6 @@
 package com.pbu.wendi.services.agents.services;
 
-import com.pbu.wendi.requests.agents.dto.ApprovalRequest;
+import com.pbu.wendi.utils.requests.agents.dto.ApprovalRequest;
 import com.pbu.wendi.utils.enums.AgentType;
 
 import java.util.List;

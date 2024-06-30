@@ -1,6 +1,6 @@
 package com.pbu.wendi.services.agents.services;
 
-import com.pbu.wendi.requests.agents.dto.SignatoryRequest;
+import com.pbu.wendi.utils.requests.agents.dto.SignatoryRequest;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;

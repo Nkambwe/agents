@@ -2,7 +2,7 @@ package com.pbu.wendi.services.sam.services;
 
 import com.pbu.wendi.model.sam.models.Branch;
 import com.pbu.wendi.repositories.sam.repos.BranchRepository;
-import com.pbu.wendi.requests.sam.dto.BranchRequest;
+import com.pbu.wendi.utils.requests.sam.dto.BranchRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;

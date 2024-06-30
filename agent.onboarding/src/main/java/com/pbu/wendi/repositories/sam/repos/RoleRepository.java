@@ -9,12 +9,13 @@ import org.springframework.data.repository.query.Param;
 
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
-    boolean existsById(long roleId);
+    boolean existsById(long id);
     boolean existsByName(String name);
     boolean existsByNameAndIdNot(String name, long id);
     boolean existsByDescription(String description);
     boolean existsByDescriptionAndIdNot(String description, long id);
-
+    @Query("SELECT COUNT(r) > 0 FROM Role r WHERE r.id = :id")
+    boolean checkRole(@Param("id") long id);
     Role findById(long id);
     @Transactional
     @Modifying
