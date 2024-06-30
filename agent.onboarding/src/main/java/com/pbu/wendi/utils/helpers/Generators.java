@@ -1,6 +1,6 @@
 package com.pbu.wendi.utils.helpers;
 
-import com.pbu.wendi.utils.requests.agents.dto.SettingsRequest;
+import com.pbu.wendi.requests.agents.dto.SettingsRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.common.Secure;
 import org.apache.commons.lang3.exception.ExceptionUtils;

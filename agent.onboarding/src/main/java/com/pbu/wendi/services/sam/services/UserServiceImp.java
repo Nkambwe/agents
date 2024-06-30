@@ -7,13 +7,14 @@ import com.pbu.wendi.model.sam.models.User;
 import com.pbu.wendi.repositories.sam.repos.BranchRepository;
 import com.pbu.wendi.repositories.sam.repos.RoleRepository;
 import com.pbu.wendi.repositories.sam.repos.UserRepository;
-import com.pbu.wendi.utils.requests.sam.dto.LoginRequest;
-import com.pbu.wendi.utils.requests.sam.dto.UserRequest;
+import com.pbu.wendi.requests.sam.dto.LoginRequest;
+import com.pbu.wendi.requests.sam.dto.UserRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -382,6 +383,8 @@ public class UserServiceImp implements UserService {
             throw new GeneralException(String.format("%s", ex.getMessage()));
         }
     }
+
+    @Override
     public void updatePassword(long id, String password){
         logger.info("update user password");
         try{
@@ -394,12 +397,14 @@ public class UserServiceImp implements UserService {
             throw new GeneralException(String.format("%s", ex.getMessage()));
         }
     }
-    public void setActiveStatus(long id, boolean active, String modifiedBy, String modifiedOn){
-        logger.info("update user password");
+
+    @Override
+    public void setActiveStatus(long id, boolean active, String modifiedBy, LocalDateTime modifiedOn){
+        logger.info(String.format("Activate user account for userId %s", id));
         try{
             users.updateIsActiveById(active, modifiedBy, modifiedOn, id);
         } catch(Exception ex){
-            logger.info("An error occurred in method 'updateIsActiveById' in 'UserService'");
+            logger.info("An error occurred in method 'setActiveStatus' in 'UserService'");
             logger.error(ex.getMessage());
             logger.info("Stacktrace::");
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
@@ -408,7 +413,21 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public void setLoginStatus(long id, boolean loggedIn, String lastLoginOn){
+    public void verifyUser(boolean verified, String modifiedBy, LocalDateTime modifiedOn, long id){
+        logger.info(String.format("Verify user account for userId %s", id));
+        try{
+            users.updateIsVerifyById(verified, modifiedBy, modifiedOn, id);
+        } catch(Exception ex){
+            logger.info("An error occurred in method 'verifyUser' in 'UserService'");
+            logger.error(ex.getMessage());
+            logger.info("Stacktrace::");
+            logger.stackTrace(Arrays.toString(ex.getStackTrace()));
+            throw new GeneralException(String.format("%s", ex.getMessage()));
+        }
+    }
+
+    @Override
+    public void setLoginStatus(long id, boolean loggedIn, LocalDateTime lastLoginOn){
         logger.info("update user login status");
         try{
             users.updateisLoggedInById(id, loggedIn, lastLoginOn);

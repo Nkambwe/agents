@@ -2,7 +2,7 @@ package com.pbu.wendi.services.agents.services;
 
 import com.pbu.wendi.model.agents.models.Bank;
 import com.pbu.wendi.repositories.agents.repos.BankRepository;
-import com.pbu.wendi.utils.requests.agents.dto.BankRequest;
+import com.pbu.wendi.requests.agents.dto.BankRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;

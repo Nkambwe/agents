@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @SuppressWarnings("SpellCheckingInspection")
@@ -35,11 +36,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("UPDATE User u SET u.isDeleted = :status WHERE u.id = :id")
     void markAsDeleted(@Param("id") long id, @Param("status") boolean status);
 
-    @Transactional
-    @Modifying
-    @Query("UPDATE User u SET u.isActive = :status WHERE u.id = :id")
-    void markAsActive(@Param("id") long id, @Param("status") boolean status);
-
     @Modifying
     @Query("UPDATE User u SET u.password = :password WHERE u.id = :id")
     void updatePasswordById(@Param("password") String password, @Param("id") long id);
@@ -47,12 +43,17 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Transactional
     @Modifying
     @Query("UPDATE User u SET u.isActive = :active, u.isDeleted = false, u.modifiedBy = :modifiedBy, u.modifiedOn = :modifiedOn WHERE u.id = :id")
-    void updateIsActiveById(@Param("active") boolean active, @Param("modifiedBy") String modifiedBy, @Param("modifiedOn")String modifiedOn, @Param("id") long id);
+    void updateIsActiveById(@Param("active") boolean active, @Param("modifiedBy") String modifiedBy, @Param("modifiedOn") LocalDateTime modifiedOn, @Param("id") long id);
+
+    @Transactional
+    @Modifying
+    @Query("UPDATE User u SET u.isActive = :verified, u.isVerified = :verified, u.isDeleted = false, u.verifiedBy = :modifiedBy, u.modifiedBy = :modifiedBy, u.modifiedOn = :modifiedOn WHERE u.id = :id")
+    void updateIsVerifyById(@Param("verified") boolean verified, @Param("modifiedBy") String modifiedBy, @Param("modifiedOn")LocalDateTime modifiedOn, @Param("id") long id);
 
     @Transactional
     @Modifying
     @Query("UPDATE User u SET u.isLoggedIn = :loggedIn, u.lastLoginOn = :lastLoginOn WHERE u.id = :id")
-    void updateisLoggedInById(@Param("id") long id, @Param("loggedIn") boolean loggedIn, @Param("lastLoginOn")String lastLoginOn);
+    void updateisLoggedInById(@Param("id") long id, @Param("loggedIn") boolean loggedIn, @Param("lastLoginOn")LocalDateTime lastLoginOn);
 
     @Transactional
     @Modifying

@@ -1,12 +1,13 @@
 package com.pbu.wendi.controllers;
 
 import com.pbu.wendi.configurations.ApplicationExceptionHandler;
+import com.pbu.wendi.requests.sam.dto.*;
+import com.pbu.wendi.responses.WendiResponse;
 import com.pbu.wendi.services.sam.services.*;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.common.NetworkService;
 import com.pbu.wendi.utils.exceptions.*;
 import com.pbu.wendi.utils.helpers.Generators;
-import com.pbu.wendi.utils.requests.sam.dto.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -1069,18 +1069,18 @@ public class SamController {
             if(exists){
                 logger.info(String.format("Resource Conflict! Another permissionSet with name '%s' exists", setName));
                 return errorHandler.duplicatesResourceExceptionHandler(
-                        new DuplicateException("PermissionSet", "Name", setName),
+                        new DuplicateException("PermissionSet", "SetName", setName),
                         request);
             }
 
             //check whether permissionSet Description is not in use
             logger.info("Checking whether permissionSet assigned description is not in use...");
             String descr = permissionSet.getDescription();
-            exists = this.setService.checkNameDuplication(descr, setId);
+            exists = this.setService.checkDescriptionDuplication(descr, setId);
             if(exists){
                 logger.info(String.format("Resource Conflict! Another permissionSet with description '%s' exists", descr));
                 return errorHandler.duplicatesResourceExceptionHandler(
-                        new DuplicateException("PermissionSet", "SolID", descr),
+                        new DuplicateException("PermissionSet", "Description", descr),
                         request);
             }
 
@@ -1843,13 +1843,12 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
     @PostMapping("/activateUser/{recordId}/{activeStatus}/{userId}")
     public ResponseEntity<?>activateUser(@PathVariable Long recordId,
                                          @PathVariable Boolean activeStatus,
                                          @PathVariable("userId") long userId,
                                          HttpServletRequest request){
-        logger.info(String.format("Delete role with ID '%s' by user with id %s" ,recordId, userId));
+        logger.info(String.format("Activate user with ID '%s' by user with id %s" ,recordId, userId));
 
         //try finding resource
         String ip = networkService.getIncomingIpAddress(request);
@@ -1857,8 +1856,47 @@ public class SamController {
             //log user activity
             logService.create(generateLog(userId, ip, String.format("Change active status of user with ID '%s' to '%s' by user with id %s", activeStatus, recordId, userId)));
 
-            CompletableFuture<RoleRequest> app = this.roleService.findById(recordId);
-            RoleRequest record = app.join();
+            CompletableFuture<UserRequest> app = this.userService.findById(recordId);
+            UserRequest record = app.join();
+            if(record == null){
+                logger.info(String.format("User with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found", recordId, userId));
+                return errorHandler.resourceNotFoundExceptionHandler(
+                        new NotFoundException("User","UserId",recordId),
+                        request);
+            }
+
+            //..modifier
+            String modifiedBy = String.format("%s", userId);
+            //..update active status
+            userService.setActiveStatus(recordId, activeStatus, modifiedBy, LocalDateTime.now());
+
+            //response
+            WendiResponse wendiResponse = new WendiResponse();
+            wendiResponse.setStatus("200");
+            wendiResponse.setMessage("User record activated successfully");
+            wendiResponse.setData(String.format("%s", activeStatus));
+            return new ResponseEntity<>(wendiResponse, HttpStatus.OK);
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            logger.error(String.format("General Error:: %s", msg));
+            return errorHandler.errorHandler(new GeneralException(msg),request);
+        }
+    }
+    @PostMapping("/verifyUser/{recordId}/{verified}/{userId}")
+    public ResponseEntity<?>verifyUser(@PathVariable Long recordId,
+                                         @PathVariable Boolean verified,
+                                         @PathVariable("userId") long userId,
+                                         HttpServletRequest request){
+        logger.info(String.format("Verify user with ID '%s' by user with id %s" ,recordId, userId));
+
+        //try finding resource
+        String ip = networkService.getIncomingIpAddress(request);
+        try {
+            //log user activity
+            logService.create(generateLog(userId, ip, String.format("Change verified status of user with ID '%s' to '%s' by user with id %s", verified, recordId, userId)));
+
+            CompletableFuture<UserRequest> app = this.userService.findById(recordId);
+            UserRequest record = app.join();
             if(record == null){
                 logger.info(String.format("User with id %s retrieval by user with id %s failed. Returned a 404 code - Resource not found", recordId, userId));
                 return errorHandler.resourceNotFoundExceptionHandler(
@@ -1869,14 +1907,15 @@ public class SamController {
             //..modifier
             String modifiedBy = String.format("%s", userId);
 
-            //..modified on
-            LocalDateTime now = LocalDateTime.now();
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss a");
-            String modifiedOn = now.format(formatter);
-
             //..update active status
-            userService.setActiveStatus(recordId, activeStatus, modifiedBy, modifiedOn);
-            return new ResponseEntity<>("User record updated successfully", HttpStatus.OK);
+            userService.verifyUser(verified, modifiedBy, LocalDateTime.now(), recordId);
+
+            //response
+            WendiResponse wendiResponse = new WendiResponse();
+            wendiResponse.setStatus("200");
+            wendiResponse.setMessage("User record verified successfully");
+            wendiResponse.setData(String.format("%s", verified));
+            return new ResponseEntity<>(wendiResponse, HttpStatus.OK);
         } catch (Exception e) {
             String msg = e.getMessage();
             logger.error(String.format("General Error:: %s", msg));
@@ -1906,7 +1945,13 @@ public class SamController {
             }
 
             userService.delete(recordId);
-            return new ResponseEntity<>("User record deleted successfully", HttpStatus.OK);
+
+            //response
+            WendiResponse wendiResponse = new WendiResponse();
+            wendiResponse.setStatus("200");
+            wendiResponse.setMessage("User record deleted successfully");
+            wendiResponse.setData("true");
+            return new ResponseEntity<>(wendiResponse, HttpStatus.OK);
         } catch (Exception e) {
             String msg = e.getMessage();
             logger.error(String.format("General Error:: %s", msg));
@@ -1939,7 +1984,12 @@ public class SamController {
             }
 
             userService.softDelete(recordId, isDeleted);
-            return new ResponseEntity<>("User record updated successfully", HttpStatus.OK);
+            //response
+            WendiResponse wendiResponse = new WendiResponse();
+            wendiResponse.setStatus("200");
+            wendiResponse.setMessage("User record marked as deleted status updated successfully");
+            wendiResponse.setData(String.format("%s",isDeleted));
+            return new ResponseEntity<>(wendiResponse, HttpStatus.OK);
         } catch (Exception e) {
             String msg = e.getMessage();
             logger.error(String.format("General Error:: %s", msg));

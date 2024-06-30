@@ -1,8 +1,8 @@
 package com.pbu.wendi.services.attachments.services;
 
-import com.pbu.wendi.utils.requests.attachments.dto.AttachmentRequest;
-import com.pbu.wendi.utils.requests.attachments.dto.IdentificationRequest;
-import com.pbu.wendi.utils.requests.attachments.dto.TypeRequest;
+import com.pbu.wendi.requests.attachments.dto.AttachmentRequest;
+import com.pbu.wendi.requests.attachments.dto.IdentificationRequest;
+import com.pbu.wendi.requests.attachments.dto.TypeRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

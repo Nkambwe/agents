@@ -2,10 +2,10 @@ package com.pbu.wendi.controllers;
 
 import com.pbu.wendi.configurations.ApplicationExceptionHandler;
 import com.pbu.wendi.services.sam.services.LogService;
-import com.pbu.wendi.utils.requests.attachments.dto.AttachmentRequest;
-import com.pbu.wendi.utils.requests.attachments.dto.IdentificationRequest;
-import com.pbu.wendi.utils.requests.attachments.dto.TypeRequest;
-import com.pbu.wendi.utils.requests.sam.dto.LogRequest;
+import com.pbu.wendi.requests.attachments.dto.AttachmentRequest;
+import com.pbu.wendi.requests.attachments.dto.IdentificationRequest;
+import com.pbu.wendi.requests.attachments.dto.TypeRequest;
+import com.pbu.wendi.requests.sam.dto.LogRequest;
 import com.pbu.wendi.services.attachments.services.AttachmentService;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.common.NetworkService;

@@ -1,11 +1,11 @@
 package com.pbu.wendi.controllers;
 
 import com.pbu.wendi.configurations.ApplicationExceptionHandler;
-import com.pbu.wendi.utils.requests.agents.dto.SettingsRequest;
-import com.pbu.wendi.utils.requests.helpers.dto.LoginModel;
-import com.pbu.wendi.utils.requests.sam.dto.LogRequest;
-import com.pbu.wendi.utils.requests.sam.dto.PermissionRequest;
-import com.pbu.wendi.utils.requests.sam.dto.UserRequest;
+import com.pbu.wendi.requests.agents.dto.SettingsRequest;
+import com.pbu.wendi.requests.helpers.dto.LoginModel;
+import com.pbu.wendi.requests.sam.dto.LogRequest;
+import com.pbu.wendi.requests.sam.dto.PermissionRequest;
+import com.pbu.wendi.requests.sam.dto.UserRequest;
 import com.pbu.wendi.services.agents.services.SettingService;
 import com.pbu.wendi.services.sam.services.*;
 import com.pbu.wendi.utils.common.AppLoggerService;
@@ -98,6 +98,7 @@ public class LoginController {
 
         //retrieve user by username
         UserRequest user;
+        LoginModel login;
         try{
             //log user activity
             logger.info(String.format("Retrieve user record by Username '%s'", userName));
@@ -116,7 +117,7 @@ public class LoginController {
             }
 
             //map user record
-            LoginModel login = this.mapper.map(user, LoginModel.class);
+            login = this.mapper.map(user, LoginModel.class);
 
             //make sure user is not already logged in
             if(login.isLoggedIn()){
@@ -147,7 +148,7 @@ public class LoginController {
             int loginAttempts = Generators.getAttempts(loginSettings);
 
             //..try login
-            if(loginAttempts <= attempts){
+            if(loginAttempts >= attempts){
                 //..validate password
                 boolean isMatched = Generators.isPasswordMatch(password, user.getPassword(), logger);
                 if(!isMatched){
@@ -161,24 +162,32 @@ public class LoginController {
                 login.setExpiresIn(expiresIn);
                 login.setTimeout(Generators.getTimeout(loginSettings));
 
+                List<String> grants = new ArrayList<>();
                 //...add roles permissions
                 if(user.getRoleId() != 0){
-                    CompletableFuture<List<PermissionRequest>> permissionRecords = permissionService.findPermissionsByRoleId(user.getRoleId());
-                    List<PermissionRequest> permissions = permissionRecords.get();
-                    if(permissions != null && !permissions.isEmpty()){
-                        List<String> grants = new ArrayList<>();
-                        for (PermissionRequest permission: permissions) {
-                            grants.add(permission.getName());
-                        }
-                        login.setPermissions(grants);
-                    }
+                    permissionService.findPermissionsByRoleId(user.getRoleId())
+                            .thenApply(permissionRecords -> {
+
+                                if (permissionRecords != null && !permissionRecords.isEmpty()) {
+                                    for (PermissionRequest permission : permissionRecords) {
+                                        grants.add(permission.getName());
+                                    }
+                                }
+                                return null; // or return some meaningful value
+                            }).exceptionally(ex -> {
+                                // Handle exceptions here, e.g., log the error
+                                ex.printStackTrace();
+                                return null;
+                            });
                 }
+                login.setPermissions(grants);
+                login.setLoggedIn(true);
 
                 //...update logged in status
-                this.userService.setLoginStatus(user.getId(), true, currentDate);
+                this.userService.setLoginStatus(user.getId(), true, LocalDateTime.now());
             } else {
                 //...deactivate user account
-                this.userService.setActiveStatus(user.getId(), false, "SAM", currentDate);
+                this.userService.setActiveStatus(user.getId(), false, "SAM", LocalDateTime.now());
                 return exceptionHandler.clientErrorHandler(new ClientException("Your account has been Deactivated Ask your Administrator for help"), request);
             }
 
@@ -189,7 +198,7 @@ public class LoginController {
         }
 
         //return branch record
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(login, HttpStatus.OK);
     }
     @GetMapping("/logout/{userId}/{userName}")
     public ResponseEntity<?> logout(@PathVariable("userId") long userId,
@@ -205,7 +214,7 @@ public class LoginController {
         logger.info(logMsg);
         try{
             //...update logged in status
-            this.userService.setLoginStatus(userId, false, currentDate);
+            this.userService.setLoginStatus(userId, false, LocalDateTime.now());
         } catch(Exception ex){
             String msg = ex.getMessage();
             logger.error(String.format("General exception:: %s", msg));
@@ -280,7 +289,7 @@ public class LoginController {
         String currentDate = Generators.currentDate();
 
         //Network IP Address
-        String  pwd ="";
+        String  pwd;
         String ip = networkService.getIncomingIpAddress(request);
         String logMsg = String.format("SAM FORGOTTEN_PASSWORD :: Request for system password reset at '%s' by email '%s' from IP Address :: %s", currentDate, email, ip);
         logger.info(logMsg);

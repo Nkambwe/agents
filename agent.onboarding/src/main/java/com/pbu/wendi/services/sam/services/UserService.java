@@ -1,8 +1,9 @@
 package com.pbu.wendi.services.sam.services;
 
-import com.pbu.wendi.utils.requests.sam.dto.LoginRequest;
-import com.pbu.wendi.utils.requests.sam.dto.UserRequest;
+import com.pbu.wendi.requests.sam.dto.LoginRequest;
+import com.pbu.wendi.requests.sam.dto.UserRequest;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,8 +26,9 @@ public interface UserService {
     CompletableFuture<UserRequest> create(UserRequest user);
     void update(UserRequest user, long roleId, long branchId);
     void updatePassword(long id, String password);
-    void setActiveStatus(long id, boolean active, String modifiedBy, String modifiedOn);
-    void setLoginStatus(long id, boolean loggedIn, String lastLoginOn);
+    void setActiveStatus(long id, boolean active, String modifiedBy, LocalDateTime modifiedOn);
+    void verifyUser(boolean verified, String modifiedBy, LocalDateTime modifiedOn, long id);
+    void setLoginStatus(long id, boolean loggedIn, LocalDateTime lastLoginOn);
     void softDelete(long id, boolean status);
     void delete(long id);
 }

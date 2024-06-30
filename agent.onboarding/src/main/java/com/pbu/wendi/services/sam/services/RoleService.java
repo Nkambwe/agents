@@ -1,6 +1,6 @@
 package com.pbu.wendi.services.sam.services;
 
-import com.pbu.wendi.utils.requests.sam.dto.RoleRequest;
+import com.pbu.wendi.requests.sam.dto.RoleRequest;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
