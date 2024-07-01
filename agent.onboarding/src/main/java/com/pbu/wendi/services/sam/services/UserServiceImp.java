@@ -10,6 +10,7 @@ import com.pbu.wendi.repositories.sam.repos.UserRepository;
 import com.pbu.wendi.requests.sam.dto.LoginRequest;
 import com.pbu.wendi.requests.sam.dto.UserRequest;
 import com.pbu.wendi.utils.common.AppLoggerService;
+import com.pbu.wendi.utils.enums.Gender;
 import com.pbu.wendi.utils.exceptions.GeneralException;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -354,6 +355,7 @@ public class UserServiceImp implements UserService {
             }
 
             User record = this.mapper.map(user, User.class);
+            record.setGender(Gender.convertToEnum(user.getGender()));
             record.setRole(role);
             record.setBranch(branch);
             users.save(record);

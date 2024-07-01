@@ -1872,7 +1872,7 @@ public class SamController {
 
             //response
             WendiResponse wendiResponse = new WendiResponse();
-            wendiResponse.setStatus("200");
+            wendiResponse.setStatus(200);
             wendiResponse.setMessage("User record activated successfully");
             wendiResponse.setData(String.format("%s", activeStatus));
             return new ResponseEntity<>(wendiResponse, HttpStatus.OK);
@@ -1912,7 +1912,7 @@ public class SamController {
 
             //response
             WendiResponse wendiResponse = new WendiResponse();
-            wendiResponse.setStatus("200");
+            wendiResponse.setStatus(200);
             wendiResponse.setMessage("User record verified successfully");
             wendiResponse.setData(String.format("%s", verified));
             return new ResponseEntity<>(wendiResponse, HttpStatus.OK);
@@ -1948,7 +1948,7 @@ public class SamController {
 
             //response
             WendiResponse wendiResponse = new WendiResponse();
-            wendiResponse.setStatus("200");
+            wendiResponse.setStatus(200);
             wendiResponse.setMessage("User record deleted successfully");
             wendiResponse.setData("true");
             return new ResponseEntity<>(wendiResponse, HttpStatus.OK);
@@ -1986,7 +1986,7 @@ public class SamController {
             userService.softDelete(recordId, isDeleted);
             //response
             WendiResponse wendiResponse = new WendiResponse();
-            wendiResponse.setStatus("200");
+            wendiResponse.setStatus(200);
             wendiResponse.setMessage("User record marked as deleted status updated successfully");
             wendiResponse.setData(String.format("%s",isDeleted));
             return new ResponseEntity<>(wendiResponse, HttpStatus.OK);

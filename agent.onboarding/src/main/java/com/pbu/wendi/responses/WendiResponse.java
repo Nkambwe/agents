@@ -1,12 +1,12 @@
 package com.pbu.wendi.responses;
 
 public class WendiResponse {
-    private String status;
-    public String getStatus() {
+    private int status;
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
     private String message;

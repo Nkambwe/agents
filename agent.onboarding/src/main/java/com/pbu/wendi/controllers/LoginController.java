@@ -6,6 +6,7 @@ import com.pbu.wendi.requests.helpers.dto.LoginModel;
 import com.pbu.wendi.requests.sam.dto.LogRequest;
 import com.pbu.wendi.requests.sam.dto.PermissionRequest;
 import com.pbu.wendi.requests.sam.dto.UserRequest;
+import com.pbu.wendi.responses.WendiResponse;
 import com.pbu.wendi.services.agents.services.SettingService;
 import com.pbu.wendi.services.sam.services.*;
 import com.pbu.wendi.utils.common.AppLoggerService;
@@ -210,7 +211,7 @@ public class LoginController {
         //Network IP Address
         String ip = networkService.getIncomingIpAddress(request);
         String logMsg = String.format("SAM LOGOUT :: System logout at '%s' by username '%s' from IP Address :: %s", currentDate, userName, ip);
-        logService.create(generateLog(0, ip, logMsg));
+        logService.create(generateLog(0, ip, String.format("Logout by user '%s' at '%s'", userName,currentDate)));
         logger.info(logMsg);
         try{
             //...update logged in status
@@ -221,7 +222,12 @@ public class LoginController {
             return exceptionHandler.errorHandler(new GeneralException("Failed to logout user. An error occurred"), request);
         }
 
-        return new ResponseEntity<>("Successfully logged out", HttpStatus.OK);
+        //response
+        WendiResponse wendiResponse = new WendiResponse();
+        wendiResponse.setStatus(200);
+        wendiResponse.setMessage("Successfully logged out");
+        wendiResponse.setData(String.format("%s", "true"));
+        return new ResponseEntity<>(wendiResponse, HttpStatus.OK);
     }
 
     @GetMapping("/passwordReset/{userId}/{oldPassword}/{newPassword}/{confirmPassword}")
