@@ -65,10 +65,10 @@ public class LoginController {
         this.mailService = mailService;
     }
 
-    @GetMapping("/login/{userName}/{password}/{attempts}")
-    public ResponseEntity<?> login(@PathVariable("userName") String userName,
-                                   @PathVariable("password") String password,
-                                   @PathVariable("attempts") int attempts,
+    @GetMapping("login")
+    public ResponseEntity<?> login(@RequestParam("userName") String userName,
+                                   @RequestParam("password") String password,
+                                   @RequestParam("attempts") int attempts,
                                    HttpServletRequest request){
         // current date and time
         String currentDate = Generators.currentDate();
@@ -205,9 +205,9 @@ public class LoginController {
         //return branch record
         return new ResponseEntity<>(login, HttpStatus.OK);
     }
-    @GetMapping("/logout/{userId}/{userName}")
-    public ResponseEntity<?> logout(@PathVariable("userId") long userId,
-                                    @PathVariable("userName") String userName,
+    @GetMapping("logout")
+    public ResponseEntity<?> logout(@RequestParam("userId") long userId,
+                                    @RequestParam("userName") String userName,
                                     HttpServletRequest request){
         // current date and time
         String currentDate = Generators.currentDate();
@@ -234,11 +234,11 @@ public class LoginController {
         return new ResponseEntity<>(wendiResponse, HttpStatus.OK);
     }
 
-    @GetMapping("/passwordReset/{userId}/{oldPassword}/{newPassword}/{confirmPassword}")
-    public ResponseEntity<?> passwordReset(@PathVariable("userId") long userId,
-                                           @PathVariable("oldPassword") String oldPassword,
-                                           @PathVariable("newPassword") String newPassword,
-                                           @PathVariable("confirmPassword") String confirmPassword,
+    @GetMapping("passwordReset")
+    public ResponseEntity<?> passwordReset(@RequestParam("userId") long userId,
+                                           @RequestParam("oldPassword") String oldPassword,
+                                           @RequestParam("newPassword") String newPassword,
+                                           @RequestParam("confirmPassword") String confirmPassword,
                                            HttpServletRequest request){
                 // current date and time
                 String currentDate = Generators.currentDate();
@@ -292,9 +292,8 @@ public class LoginController {
 
                 return new ResponseEntity<>("Password updated successfully", HttpStatus.OK);
             }
-
-    @GetMapping("/forgotPassword/{email}")
-    public ResponseEntity<?> forgotPassword( @PathVariable("email") String email, HttpServletRequest request){
+    @GetMapping("forgotPassword")
+    public ResponseEntity<?> forgotPassword( @RequestParam("email") String email, HttpServletRequest request){
         // current date and time
         String currentDate = Generators.currentDate();
 

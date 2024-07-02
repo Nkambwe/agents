@@ -83,10 +83,10 @@ public class AgentController {
 
     //region all agents
 
-    @GetMapping("/getAgentById/{agentId}/{agentType}/{userId}")
-    public ResponseEntity<?> getAgentById(@PathVariable("agentId") long agentId,
-                                          @PathVariable("agentType")int agentType,
-                                          @PathVariable("userId") long userId,
+    @GetMapping("getAgentById")
+    public ResponseEntity<?> getAgentById(@RequestParam("agentId") long agentId,
+                                          @RequestParam("agentType")int agentType,
+                                          @RequestParam("userId") long userId,
                                           HttpServletRequest request){
         logger.info(String.format("Retrieve Agent with AgentId '%s' by user with id %s" ,agentId, userId));
         AgentRequest record;
@@ -121,10 +121,10 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getAgentBySortCode/{sortCode}/{agentType}/{userId}")
-    public ResponseEntity<?> getAgentBySortCode(@PathVariable("sortCode") String sortCode,
-                                                @PathVariable("agentType")int agentType,
-                                                @PathVariable("userId") long userId,
+    @GetMapping("getAgentBySortCode")
+    public ResponseEntity<?> getAgentBySortCode(@RequestParam("sortCode") String sortCode,
+                                                @RequestParam("agentType")int agentType,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
         logger.info(String.format("Retrieve Agent with sortCode '%s' by user with id %s" ,sortCode, userId));
         AgentRequest record;
@@ -159,9 +159,9 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PostMapping("/saveIndividualAgents/{userId}")
+    @PostMapping("saveIndividualAgents")
     public ResponseEntity<?> saveIndividualAgents(@RequestBody @Valid List<IndividualRequest> records,
-                                                  @PathVariable("userId") long userId,
+                                                  @RequestParam("userId") long userId,
                                                   HttpServletRequest request){
         try {
             logger.info(String.format("Importing individual agent records by user with id %s" ,userId));
@@ -174,9 +174,9 @@ public class AgentController {
         return new ResponseEntity<>("Imported successfully", HttpStatus.OK);
     }
 
-    @PostMapping("/saveBusinessAgents/{userId}")
+    @PostMapping("saveBusinessAgents")
     public ResponseEntity<?> saveBusinessAgents(@RequestBody @Valid List<BusinessRequest> records,
-                                                @PathVariable("userId") long userId,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
 
         try {
@@ -192,9 +192,9 @@ public class AgentController {
     //endregion
 
     //region business agents
-    @GetMapping("/ getBusinessWithId/{agentId}/{userId}")
-    public ResponseEntity<?> getBusinessWithId(@PathVariable("agentId") long agentId,
-                                               @PathVariable("userId") long userId,
+    @GetMapping("getBusinessWithId")
+    public ResponseEntity<?> getBusinessWithId(@RequestParam("agentId") long agentId,
+                                               @RequestParam("userId") long userId,
                                                HttpServletRequest request){
         logger.info(String.format("Retrieve Individual Agent with ID '%s' by user with id %s",agentId,userId));
         BusinessRequest record;
@@ -215,9 +215,9 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/ getBusinessWithSortCode/{sortCode}/{userId}")
-    public ResponseEntity<?> getBusinessWithSortCode(@PathVariable("sortCode") String sortCode,
-                                                     @PathVariable("userId") long userId,
+    @GetMapping("getBusinessWithSortCode")
+    public ResponseEntity<?> getBusinessWithSortCode(@RequestParam("sortCode") String sortCode,
+                                                     @RequestParam("userId") long userId,
                                                      HttpServletRequest request){
         logger.info(String.format("Retrieve Business Agent with SortCode '%s' by user with id %s",sortCode,userId));
         BusinessRequest record;
@@ -237,9 +237,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/ getBusinessWithName/{businessName}/{userId}")
-    public ResponseEntity<?> getBusinessWithName(@PathVariable("businessName") String businessName,
-                                                 @PathVariable("userId") long userId,
+    @GetMapping("getBusinessWithName")
+    public ResponseEntity<?> getBusinessWithName(@RequestParam("businessName") String businessName,
+                                                 @RequestParam("userId") long userId,
                                                  HttpServletRequest request){
         logger.info(String.format("Retrieve Business Agent with SortCode '%s' by user with id %s",businessName,userId));
         BusinessRequest record;
@@ -259,8 +259,8 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getBusinessAgents/{userId}")
-    public ResponseEntity<?>getBusinessAgents(@PathVariable("userId") long userId,
+    @GetMapping("getBusinessAgents")
+    public ResponseEntity<?>getBusinessAgents(@RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Retrieve business agents by user with id %s",userId));
 
@@ -288,8 +288,8 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/getDeletedBusinessAgents/{userId}")
-    public ResponseEntity<?>getDeletedBusinessAgents(@PathVariable("userId") long userId,
+    @GetMapping("getDeletedBusinessAgents")
+    public ResponseEntity<?>getDeletedBusinessAgents(@RequestParam("userId") long userId,
                                                      HttpServletRequest request){
         logger.info(String.format("Retrieve business agents by user with id %s",userId));
 
@@ -316,9 +316,9 @@ public class AgentController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-    @PostMapping("/onBoardBusinessAgent/{userId}")
+    @PostMapping("onBoardBusinessAgent")
     public ResponseEntity<?> onBoardBusinessAgent(@RequestBody BusinessRequest business,
-                                                  @PathVariable("userId") long userId,
+                                                  @RequestParam("userId") long userId,
                                                   BindingResult bindingResult,
                                                   HttpServletRequest request) {
         logger.info(String.format("Create new Business agent by user with id %s", userId));
@@ -419,9 +419,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/modifyBusinessAgent/{userId}")
+    @PostMapping("modifyBusinessAgent")
     public ResponseEntity<?> modifyBusinessAgent(@RequestBody BusinessRequest business,
-                                                 @PathVariable("userId") long userId,
+                                                 @RequestParam("userId") long userId,
                                                  BindingResult bindingResult,
                                                  HttpServletRequest request) {
         logger.info(String.format("Modify Business agent with ID by user with id %s", userId));
@@ -481,10 +481,10 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/softDeleteBusiness/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteBusiness(@PathVariable Long recordId,
-                                                @PathVariable Boolean isDeleted,
-                                                @PathVariable("userId") long userId,
+    @PostMapping("softDeleteBusiness")
+    public ResponseEntity<?> softDeleteBusiness(@RequestParam Long recordId,
+                                                @RequestParam Boolean isDeleted,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
         logger.info(String.format("Mark Agent with ID '%s' as deleted by user with id %s",recordId,userId));
         try {
@@ -505,9 +505,9 @@ public class AgentController {
             return exceptionHandler.errorHandler(new GeneralException(msg),request);
         }
     }
-    @PutMapping("/deleteBusiness/{recordId}/{userId}")
-    public ResponseEntity<?> deleteBusiness(@PathVariable Long recordId,
-                                            @PathVariable("userId") long userId,
+    @PutMapping("deleteBusiness")
+    public ResponseEntity<?> deleteBusiness(@RequestParam Long recordId,
+                                            @RequestParam("userId") long userId,
                                             HttpServletRequest request){
         logger.info(String.format("Delete Agent with ID '%s' by user with id %s",recordId, userId));
 
@@ -532,9 +532,9 @@ public class AgentController {
     //endregion
 
     //region individual agents
-    @GetMapping("/ getIndividualWithId/{agentId}/{userId}")
-    public ResponseEntity<?> getIndividualWithId(@PathVariable("agentId") long agentId,
-                                                 @PathVariable("userId") long userId,
+    @GetMapping("getIndividualWithId")
+    public ResponseEntity<?> getIndividualWithId(@RequestParam("agentId") long agentId,
+                                                 @RequestParam("userId") long userId,
                                                  HttpServletRequest request){
         logger.info(String.format("Retrieve Individual Agent with ID '%s' by user with id %s",agentId,userId));
         IndividualRequest record;
@@ -555,9 +555,9 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/ getIndividualWithSortCode/{sortCode}/{userId}")
-    public ResponseEntity<?> getIndividualWithSortCode(@PathVariable("sortCode") String sortCode,
-                                                       @PathVariable("userId") long userId,
+    @GetMapping("getIndividualWithSortCode")
+    public ResponseEntity<?> getIndividualWithSortCode(@RequestParam("sortCode") String sortCode,
+                                                       @RequestParam("userId") long userId,
                                                        HttpServletRequest request){
         logger.info(String.format("Retrieve Individual Agent with SortCode '%s' by user with id %s",sortCode, userId));
         IndividualRequest record;
@@ -577,8 +577,8 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getIndividualAgents/{userId}")
-    public ResponseEntity<?>getIndividualAgents(@PathVariable("userId") long userId,
+    @GetMapping("getIndividualAgents")
+    public ResponseEntity<?>getIndividualAgents(@RequestParam("userId") long userId,
                                                 HttpServletRequest request){
         logger.info(String.format("Retrieve individual agents by user with id %s",userId));
 
@@ -605,8 +605,8 @@ public class AgentController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-    @GetMapping("/getDeletedIndividualAgents/{userId}")
-    public ResponseEntity<?>getDeletedIndividualAgents(@PathVariable("userId") long userId,
+    @GetMapping("getDeletedIndividualAgents")
+    public ResponseEntity<?>getDeletedIndividualAgents(@RequestParam("userId") long userId,
                                                        HttpServletRequest request){
         logger.info(String.format("Retrieve individual agents by user with id %s",userId));
 
@@ -633,9 +633,9 @@ public class AgentController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-    @PostMapping("/onBoardIndividualAgent/{userId}")
+    @PostMapping("onBoardIndividualAgent")
     public ResponseEntity<?> onBoardIndividualAgent(@RequestBody IndividualRequest individual,
-                                                    @PathVariable("userId") long userId,
+                                                    @RequestParam("userId") long userId,
                                                     BindingResult bindingResult,
                                                     HttpServletRequest request) {
         logger.info(String.format("Create new Individual agent by user with id %s", userId));
@@ -727,10 +727,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PostMapping("/modifyIndividualAgent/{userId}")
+    @PostMapping("modifyIndividualAgent")
     public ResponseEntity<?> modifyIndividualAgent(@RequestBody IndividualRequest individual,
-                                                   @PathVariable("userId") long userId,
+                                                   @RequestParam("userId") long userId,
                                                    BindingResult bindingResult,
                                                    HttpServletRequest request) {
         logger.info(String.format("Update Individual agent by user with id %s", userId));
@@ -785,10 +784,10 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/softDeleteIndividual/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteIndividual(@PathVariable Long recordId,
-                                                  @PathVariable Boolean isDeleted,
-                                                  @PathVariable("userId") long userId,
+    @PostMapping("softDeleteIndividual")
+    public ResponseEntity<?> softDeleteIndividual(@RequestParam Long recordId,
+                                                  @RequestParam Boolean isDeleted,
+                                                  @RequestParam("userId") long userId,
                                                   HttpServletRequest request){
         logger.info(String.format("Mark Agent with ID '%s' as deleted by user with id %s",recordId,userId));
         try {
@@ -809,9 +808,9 @@ public class AgentController {
             return exceptionHandler.errorHandler(new GeneralException(msg),request);
         }
     }
-    @PutMapping("/deleteIndividual/{recordId}/{userId}")
-    public ResponseEntity<?> deleteIndividual(@PathVariable Long recordId,
-                                              @PathVariable("userId") long userId,
+    @PutMapping("deleteIndividual")
+    public ResponseEntity<?> deleteIndividual(@RequestParam Long recordId,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Delete Agent with ID '%s' by user with id %s",recordId, userId));
 
@@ -836,10 +835,10 @@ public class AgentController {
     //endregion
 
     //region Next Of Kins
-    @GetMapping("/getKinWithName/{name}/{agentId}/{userId}")
-    public ResponseEntity<?> getKinWithName(@PathVariable("name") String name,
-                                            @PathVariable("agentId") long agentId,
-                                            @PathVariable("userId") long userId,
+    @GetMapping("getKinWithName")
+    public ResponseEntity<?> getKinWithName(@RequestParam("name") String name,
+                                            @RequestParam("agentId") long agentId,
+                                            @RequestParam("userId") long userId,
                                             HttpServletRequest request){
         logger.info(String.format("Retrieve NextOfKin with name '%s' by user with id %s" ,name, userId));
         KinRequest record;
@@ -859,10 +858,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @GetMapping("/getAgentKins/{agentId}/{userId}")
-    public ResponseEntity<?>getAgentKins(@PathVariable("agentId") long agentId,
-                                         @PathVariable("userId") long userId,
+    @GetMapping("getAgentKins")
+    public ResponseEntity<?>getAgentKins(@RequestParam("agentId") long agentId,
+                                         @RequestParam("userId") long userId,
                                          HttpServletRequest request){
         logger.info(String.format("Retrieve NextOfKin for agent with ID '%s' by user with id %s", agentId, userId));
 
@@ -888,10 +886,9 @@ public class AgentController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-
-    @PutMapping("/createKin/{userId}")
+    @PutMapping("createKin")
     public ResponseEntity<?> createKin(@RequestBody @Valid KinRequest kin,
-                                       @PathVariable("userId") long userId,
+                                       @RequestParam("userId") long userId,
                                        BindingResult bindingResult,
                                        HttpServletRequest request){
         logger.info(String.format("Create new NextOfKin by user with id %s", userId));
@@ -943,10 +940,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PutMapping("/updateKin/{userId}")
+    @PutMapping("updateKin")
     public ResponseEntity<?> updateKin(@RequestBody @Valid KinRequest kin,
-                                       @PathVariable("userId") long userId,
+                                       @RequestParam("userId") long userId,
                                        BindingResult bindingResult,
                                        HttpServletRequest request){
         logger.info(String.format("Modification of NextOfKin by user with id %s", userId));
@@ -1005,11 +1001,10 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PostMapping("/softDeleteKin/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteKin(@PathVariable Long recordId,
-                                           @PathVariable Boolean isDeleted,
-                                           @PathVariable("userId") long userId,
+    @PostMapping("softDeleteKin")
+    public ResponseEntity<?> softDeleteKin(@RequestParam Long recordId,
+                                           @RequestParam Boolean isDeleted,
+                                           @RequestParam("userId") long userId,
                                            HttpServletRequest request){
         logger.info(String.format("Mark NextOfKin '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -1033,10 +1028,9 @@ public class AgentController {
         }
 
     }
-
-    @PutMapping("/deleteKin/{recordId}/{userId}")
-    public ResponseEntity<?> deleteKin(@PathVariable Long recordId,
-                                       @PathVariable("userId") long userId,
+    @PutMapping("deleteKin")
+    public ResponseEntity<?> deleteKin(@RequestParam Long recordId,
+                                       @RequestParam("userId") long userId,
                                        HttpServletRequest request){
         logger.info(String.format("Delete Next Of Kin with ID '%s' by user with id %s",recordId, userId));
 
@@ -1062,10 +1056,10 @@ public class AgentController {
     //endregion
 
     //region Partners
-    @GetMapping("/ getAPartnerWithName/{name}/{agentId}/{userId}")
-    public ResponseEntity<?> getAPartnerWithName(@PathVariable("name") String name,
-                                                 @PathVariable("agentId") long agentId,
-                                                 @PathVariable("userId") long userId,
+    @GetMapping("getAPartnerWithName")
+    public ResponseEntity<?> getAPartnerWithName(@RequestParam("name") String name,
+                                                 @RequestParam("agentId") long agentId,
+                                                 @RequestParam("userId") long userId,
                                                  HttpServletRequest request){
         logger.info(String.format("Retrieve partner with name '%s' by user with id %s" ,name, userId));
         PartnerRequest record;
@@ -1085,9 +1079,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/ getPartnerWithId/{partnerId}/{userId}")
-    public ResponseEntity<?> getPartnerWithId(@PathVariable("partnerId") long partnerId,
-                                              @PathVariable("userId") long userId,
+    @GetMapping("getPartnerWithId")
+    public ResponseEntity<?> getPartnerWithId(@RequestParam("partnerId") long partnerId,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Retrieve partner with PartnerId '%s' by user with id %s" ,partnerId, userId));
         PartnerRequest record;
@@ -1107,10 +1101,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @GetMapping("/getAgentPartners/{agentId}/{userId}")
-    public ResponseEntity<?>getAgentPartners(@PathVariable("agentId") long agentId,
-                                             @PathVariable("userId") long userId,
+    @GetMapping("getAgentPartners")
+    public ResponseEntity<?>getAgentPartners(@RequestParam("agentId") long agentId,
+                                             @RequestParam("userId") long userId,
                                              HttpServletRequest request){
         logger.info(String.format("Retrieve Partner for agent with ID '%s' by user with id %s", agentId, userId));
 
@@ -1136,9 +1129,9 @@ public class AgentController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-    @PutMapping("/createPartner/{userId}")
+    @PutMapping("createPartner")
     public ResponseEntity<?> createPartner(@RequestBody @Valid PartnerRequest partner,
-                                           @PathVariable("userId") long userId,
+                                           @RequestParam("userId") long userId,
                                            BindingResult bindingResult,
                                            HttpServletRequest request){
         logger.info(String.format("Create new Partner by user with id %s", userId));
@@ -1185,10 +1178,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PutMapping("/updatePartner/{userId}")
+    @PutMapping("updatePartner")
     public ResponseEntity<?> updatePartner(@RequestBody @Valid PartnerRequest partner,
-                                           @PathVariable("userId") long userId,
+                                           @RequestParam("userId") long userId,
                                            BindingResult bindingResult,
                                            HttpServletRequest request){
         logger.info(String.format("Modification of Partner by user with id %s", userId));
@@ -1247,10 +1239,10 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/softDeletePartner/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeletePartner(@PathVariable Long recordId,
-                                               @PathVariable Boolean isDeleted,
-                                               @PathVariable("userId") long userId,
+    @PostMapping("softDeletePartner")
+    public ResponseEntity<?> softDeletePartner(@RequestParam Long recordId,
+                                               @RequestParam Boolean isDeleted,
+                                               @RequestParam("userId") long userId,
                                                HttpServletRequest request){
         logger.info(String.format("Mark Partner '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -1274,10 +1266,9 @@ public class AgentController {
         }
 
     }
-
-    @PutMapping("/deletePartner/{recordId}/{userId}")
-    public ResponseEntity<?> deletePartner(@PathVariable Long recordId,
-                                           @PathVariable("userId") long userId,
+    @PutMapping("deletePartner")
+    public ResponseEntity<?> deletePartner(@RequestParam Long recordId,
+                                           @RequestParam("userId") long userId,
                                            HttpServletRequest request){
         logger.info(String.format("Delete Partner with ID '%s' by user with id %s",recordId, userId));
 
@@ -1304,9 +1295,9 @@ public class AgentController {
 
     //region Operators
 
-    @GetMapping("/getAgentOperators/{agentId}/{userId}")
-    public ResponseEntity<?>getAgentOperators(@PathVariable("agentId") long agentId,
-                                              @PathVariable("userId") long userId,
+    @GetMapping("getAgentOperators")
+    public ResponseEntity<?>getAgentOperators(@RequestParam("agentId") long agentId,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Retrieve operators for agent with ID '%s' by user with id %s", agentId, userId));
 
@@ -1338,9 +1329,9 @@ public class AgentController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-    @PutMapping("/createOperator/{userId}")
+    @PutMapping("createOperator")
     public ResponseEntity<?> createOperator(@RequestBody @Valid OperatorRequest operator,
-                                            @PathVariable("userId") long userId,
+                                            @RequestParam("userId") long userId,
                                             BindingResult bindingResult,
                                             HttpServletRequest request){
         logger.info(String.format("Create new operator by user with id %s", userId));
@@ -1422,9 +1413,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PutMapping("/updateOperator/{userId}")
+    @PutMapping("updateOperator")
     public ResponseEntity<?> updateOperator(@RequestBody @Valid OperatorRequest operator,
-                                            @PathVariable("userId") long userId,
+                                            @RequestParam("userId") long userId,
                                             BindingResult bindingResult,
                                             HttpServletRequest request){
         long recordId =  operator.getId();
@@ -1491,10 +1482,10 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/softDeleteOperator/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteOperator(@PathVariable Long recordId,
-                                                @PathVariable Boolean isDeleted,
-                                                @PathVariable("userId") long userId,
+    @PostMapping("softDeleteOperator")
+    public ResponseEntity<?> softDeleteOperator(@RequestParam Long recordId,
+                                                @RequestParam Boolean isDeleted,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
         logger.info(String.format("Mark Operator '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -1518,10 +1509,9 @@ public class AgentController {
         }
 
     }
-
-    @PutMapping("/deleteOperator/{recordId}/{userId}")
-    public ResponseEntity<?> deleteOperator(@PathVariable Long recordId,
-                                            @PathVariable("userId") long userId,
+    @PutMapping("deleteOperator")
+    public ResponseEntity<?> deleteOperator(@RequestParam Long recordId,
+                                            @RequestParam("userId") long userId,
                                             HttpServletRequest request){
         logger.info(String.format("Delete Operator with ID '%s' by user with id %s",recordId, userId));
 
@@ -1543,14 +1533,13 @@ public class AgentController {
             return exceptionHandler.errorHandler(new GeneralException(msg),request);
         }
     }
-
     //endregion
 
     //region Signatories
-    @GetMapping("/getAgentSignatories/{agentId}/{agentType}/{userId}")
-    public ResponseEntity<?>getAgentSignatories(@PathVariable("agentId") long agentId,
-                                                @PathVariable("agentType") int agentType,
-                                                @PathVariable("userId") long userId,
+    @GetMapping("getAgentSignatories")
+    public ResponseEntity<?>getAgentSignatories(@RequestParam("agentId") long agentId,
+                                                @RequestParam("agentType") int agentType,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
         logger.info(String.format("Retrieve signatories for agent with ID '%s' by user with id %s", agentId, userId));
 
@@ -1579,9 +1568,9 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PutMapping("/createSignatory/{userId}")
+    @PutMapping("createSignatory")
     public ResponseEntity<?> createSignatory(@RequestBody @Valid SignatoryRequest signatory,
-                                             @PathVariable("userId") long userId,
+                                             @RequestParam("userId") long userId,
                                              BindingResult bindingResult,
                                              HttpServletRequest request){
         logger.info(String.format("Create new signatory by user with id %s", userId));
@@ -1623,10 +1612,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PutMapping("/updateSignatory//{userId}")
+    @PutMapping("updateSignatory")
     public ResponseEntity<?> updateSignatory(@RequestBody @Valid SignatoryRequest signatory,
-                                             @PathVariable("userId") long userId,
+                                             @RequestParam("userId") long userId,
                                              BindingResult bindingResult,
                                              HttpServletRequest request){
         long recordId =  signatory.getId();
@@ -1680,10 +1668,10 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/softDeleteSignatory/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteSignatory(@PathVariable Long recordId,
-                                                 @PathVariable Boolean isDeleted,
-                                                 @PathVariable("userId") long userId,
+    @PostMapping("softDeleteSignatory")
+    public ResponseEntity<?> softDeleteSignatory(@RequestParam Long recordId,
+                                                 @RequestParam Boolean isDeleted,
+                                                 @RequestParam("userId") long userId,
                                                  HttpServletRequest request){
         logger.info(String.format("Mark Signatory '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -1708,9 +1696,9 @@ public class AgentController {
 
     }
 
-    @PutMapping("/deleteSignatory/{recordId}/{userId}")
-    public ResponseEntity<?> deleteSignatory(@PathVariable Long recordId,
-                                             @PathVariable("userId") long userId,
+    @PutMapping("deleteSignatory")
+    public ResponseEntity<?> deleteSignatory(@RequestParam Long recordId,
+                                             @RequestParam("userId") long userId,
                                              HttpServletRequest request){
         logger.info(String.format("Delete Signatory with ID '%s' by user with id %s",recordId, userId));
 
@@ -1738,9 +1726,9 @@ public class AgentController {
 
     //region Approvals
 
-    @GetMapping("/getApprovalWithId/{recordId}/{userId}")
-    public ResponseEntity<?>getApprovalWithId(@PathVariable("recordId") long recordId,
-                                              @PathVariable("userId") long userId,
+    @GetMapping("getApprovalWithId")
+    public ResponseEntity<?>getApprovalWithId(@RequestParam("recordId") long recordId,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Retrieve approval with id %s by user with id %s", recordId, userId));
 
@@ -1946,9 +1934,9 @@ public class AgentController {
     //endregion
 
     //region affiliations
-    @GetMapping("/getAffiliationById/{id}/{userId}")
-    public ResponseEntity<?> getAffiliationById(@PathVariable("id") long id,
-                                                @PathVariable("userId") long userId,
+    @GetMapping("getAffiliationById")
+    public ResponseEntity<?> getAffiliationById(@RequestParam("id") long id,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
 
         logger.info(String.format("Retrieve Organization with ID '%s' by user with id %s" ,id, userId));
@@ -1980,9 +1968,8 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @GetMapping("/ getAffiliationBySortCode/{sortCode}")
-    public ResponseEntity<?> getAffiliationBySortCode(@PathVariable("sortCode") String sortCode, HttpServletRequest request){
+    @GetMapping("getAffiliationBySortCode")
+    public ResponseEntity<?> getAffiliationBySortCode(@RequestParam("sortCode") String sortCode, HttpServletRequest request){
 
         AffiliationRequest record;
         try {
@@ -2002,7 +1989,7 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getAllAffiliations")
+    @GetMapping("getAllAffiliations")
     public ResponseEntity<?>  getAllAffiliations(HttpServletRequest request) {
         List<AffiliationRequest> records;
         try {
@@ -2096,10 +2083,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PutMapping("/updateAffiliation/{userId}")
+    @PutMapping("updateAffiliation")
     public ResponseEntity<?> updateAffiliation(@RequestBody @Valid AffiliationRequest affiliation,
-                                               @PathVariable("userId") long userId,
+                                               @RequestParam("userId") long userId,
                                                BindingResult bindingResult,
                                                HttpServletRequest request){
 
@@ -2164,10 +2150,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @DeleteMapping("/softDeleteAffiliation/{id}/{isDeleted}")
-    public ResponseEntity<?> softDeleteAffiliation(@PathVariable Long id,
-                                                   @PathVariable boolean isDeleted,
+    @DeleteMapping("softDeleteAffiliation")
+    public ResponseEntity<?> softDeleteAffiliation(@RequestParam Long id,
+                                                   @RequestParam boolean isDeleted,
                                                    HttpServletRequest request) {
         logger.info(String.format("Mark organization '%s' as deleted" ,id));
 
@@ -2190,9 +2175,8 @@ public class AgentController {
             return exceptionHandler.errorHandler(new GeneralException(msg),request);
         }
     }
-
-    @DeleteMapping("/deleteAffiliation/{id}")
-    public ResponseEntity<?> deleteAffiliation(@PathVariable Long id,
+    @DeleteMapping("deleteAffiliation")
+    public ResponseEntity<?> deleteAffiliation(@RequestParam Long id,
                                                HttpServletRequest request) {
         logger.info(String.format("Delete organization with ID '%s'" ,id));
 
@@ -2219,9 +2203,9 @@ public class AgentController {
     //endregion
 
     //region banks
-    @GetMapping("/getBankById/{id}/{userId}")
-    public ResponseEntity<?> getBankById(@PathVariable("id") long id,
-                                         @PathVariable("userId") long userId,
+    @GetMapping("getBankById")
+    public ResponseEntity<?> getBankById(@RequestParam("id") long id,
+                                         @RequestParam("userId") long userId,
                                          HttpServletRequest request){
 
         logger.info(String.format("Retrieve Bank ID '%s' by user with id %s" ,id, userId));
@@ -2253,8 +2237,8 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getBankBySortCode/{sortCode}")
-    public ResponseEntity<?> getBankBySortCode(@PathVariable("sortCode") String sortCode, HttpServletRequest request){
+    @GetMapping("getBankBySortCode")
+    public ResponseEntity<?> getBankBySortCode(@RequestParam("sortCode") String sortCode, HttpServletRequest request){
 
         BankRequest record;
         try {
@@ -2368,7 +2352,6 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
     @PutMapping("/updateBank/{userId}")
     public ResponseEntity<?> updateBank(@RequestBody @Valid BankRequest bank,
                                         @PathVariable("userId") long userId,
@@ -2436,10 +2419,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @DeleteMapping("/softDeleteBank/{id}/{isDeleted}")
-    public ResponseEntity<?> softDeleteBank(@PathVariable Long id,
-                                            @PathVariable boolean isDeleted,
+    @DeleteMapping("softDeleteBank")
+    public ResponseEntity<?> softDeleteBank(@RequestParam Long id,
+                                            @RequestParam boolean isDeleted,
                                             HttpServletRequest request) {
         logger.info(String.format("Mark bank '%s' as deleted" ,id));
 
@@ -2462,9 +2444,8 @@ public class AgentController {
             return exceptionHandler.errorHandler(new GeneralException(msg),request);
         }
     }
-
-    @DeleteMapping("/deleteBank/{id}")
-    public ResponseEntity<?> deleteBank(@PathVariable Long id,
+    @DeleteMapping("deleteBank")
+    public ResponseEntity<?> deleteBank(@RequestParam Long id,
                                         HttpServletRequest request) {
         logger.info(String.format("Delete bank with ID '%s'" ,id));
 
@@ -2492,9 +2473,9 @@ public class AgentController {
 
     //region wallets
 
-    @GetMapping("/getWalletById/{id}/{userId}")
-    public ResponseEntity<?> getWalletById(@PathVariable("id") long id,
-                                            @PathVariable("userId") long userId,
+    @GetMapping("getWalletById")
+    public ResponseEntity<?> getWalletById(@RequestParam("id") long id,
+                                            @RequestParam("userId") long userId,
                                             HttpServletRequest request){
 
         logger.info(String.format("Retrieve Wallet with ID '%s' by user with id %s" ,id, userId));
@@ -2526,10 +2507,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @GetMapping("/ getWalletByName/{name}/{userId}")
-    public ResponseEntity<?> getWalletByName(@PathVariable("name") String name,
-                                              @PathVariable("userId") long userId,
+    @GetMapping("getWalletByName")
+    public ResponseEntity<?> getWalletByName(@RequestParam("name") String name,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Retrieve Wallet with name '%s' by user with id %s" ,name, userId));
         WalletRequest record;
@@ -2549,10 +2529,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @GetMapping("/getWallets/{userId}")
-    public ResponseEntity<?>getWallets(@PathVariable("userId") long userId,
-                                           HttpServletRequest request){
+    @GetMapping("getWallets")
+    public ResponseEntity<?>getWallets(@RequestParam("userId") long userId,
+                                        HttpServletRequest request){
         logger.info(String.format("Retrieve all wallets by user with id %s",userId));
 
         List<WalletRequest> records;
@@ -2577,9 +2556,8 @@ public class AgentController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-
-    @GetMapping("/getActiveWallets/{userId}")
-    public ResponseEntity<?>getActiveWallets(@PathVariable("userId") long userId,
+    @GetMapping("getActiveWallets")
+    public ResponseEntity<?>getActiveWallets(@RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Retrieve all wallets by user with id %s",userId));
 
@@ -2605,10 +2583,9 @@ public class AgentController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-
-    @PutMapping("/createWallet/{userId}")
+    @PutMapping("createWallet")
     public ResponseEntity<?> createWallet(@RequestBody @Valid WalletRequest wallet,
-                                           @PathVariable("userId") long userId,
+                                           @RequestParam("userId") long userId,
                                            BindingResult bindingResult,
                                            HttpServletRequest request){
         logger.info(String.format("Create new wallet by user with id %s", userId));
@@ -2649,10 +2626,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PutMapping("/UpdateWallet/{userId}")
+    @PutMapping("updateWallet")
     public ResponseEntity<?> UpdateWallet(@RequestBody @Valid WalletRequest wallet,
-                                           @PathVariable("userId") long userId,
+                                           @RequestParam("userId") long userId,
                                            BindingResult bindingResult,
                                            HttpServletRequest request){
         logger.info(String.format("Modification of Wallet by user with id %s", userId));
@@ -2700,11 +2676,10 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PostMapping("/softDeleteWallet/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteWallet(@PathVariable Long recordId,
-                                               @PathVariable Boolean isDeleted,
-                                               @PathVariable("userId") long userId,
+    @PostMapping("softDeleteWallet")
+    public ResponseEntity<?> softDeleteWallet(@RequestParam Long recordId,
+                                               @RequestParam Boolean isDeleted,
+                                               @RequestParam("userId") long userId,
                                                HttpServletRequest request){
         logger.info(String.format("Mark Wallet '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -2729,9 +2704,9 @@ public class AgentController {
 
     }
 
-    @PutMapping("/deleteWallet/{recordId}/{userId}")
-    public ResponseEntity<?> deleteWallet(@PathVariable Long recordId,
-                                           @PathVariable("userId") long userId,
+    @PutMapping("deleteWallet")
+    public ResponseEntity<?> deleteWallet(@RequestParam Long recordId,
+                                          @RequestParam("userId") long userId,
                                            HttpServletRequest request){
         logger.info(String.format("Delete Wallet with ID '%s' by user with id %s",recordId, userId));
 
@@ -2758,9 +2733,9 @@ public class AgentController {
 
     //region counties
 
-    @GetMapping("/getCountyById/{id}/{userId}")
-    public ResponseEntity<?> getCountyById(@PathVariable("id") long id,
-                                           @PathVariable("userId") long userId,
+    @GetMapping("getCountyById")
+    public ResponseEntity<?> getCountyById(@RequestParam("id") long id,
+                                           @RequestParam("userId") long userId,
                                            HttpServletRequest request){
 
         logger.info(String.format("Retrieve County with ID '%s' by user with id %s" ,id, userId));
@@ -2792,10 +2767,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @GetMapping("/ getCountyByName/{name}/{userId}")
-    public ResponseEntity<?> getCountyByName(@PathVariable("name") String name,
-                                             @PathVariable("userId") long userId,
+    @GetMapping("getCountyByName")
+    public ResponseEntity<?> getCountyByName(@RequestParam("name") String name,
+                                             @RequestParam("userId") long userId,
                                              HttpServletRequest request){
         logger.info(String.format("Retrieve County with name '%s' by user with id %s" ,name, userId));
         CountyRequest record;
@@ -2815,10 +2789,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @GetMapping("/getCounties/{userId}")
-    public ResponseEntity<?>getCounties(@PathVariable("userId") long userId,
-                                       HttpServletRequest request){
+    @GetMapping("getCounties")
+    public ResponseEntity<?>getCounties(@RequestParam("userId") long userId,
+                                         HttpServletRequest request){
         logger.info(String.format("Retrieve all counties by user with id %s",userId));
 
         List<CountyRequest> records;
@@ -2844,9 +2817,9 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/getActiveCounties/{userId}")
-    public ResponseEntity<?>getActiveCounties(@PathVariable("userId") long userId,
-                                             HttpServletRequest request){
+    @GetMapping("getActiveCounties")
+    public ResponseEntity<?>getActiveCounties(@RequestParam("userId") long userId,
+                                              HttpServletRequest request){
         logger.info(String.format("Retrieve all counties by user with id %s",userId));
 
         List<CountyRequest> records;
@@ -2872,9 +2845,9 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PutMapping("/createCounty/{userId}")
+    @PutMapping("createCounty")
     public ResponseEntity<?> createCounty(@RequestBody @Valid CountyRequest county,
-                                          @PathVariable("userId") long userId,
+                                          @RequestParam("userId") long userId,
                                           BindingResult bindingResult,
                                           HttpServletRequest request){
         logger.info(String.format("Create new county by user with id %s", userId));
@@ -2916,7 +2889,7 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PutMapping("/UpdateCounty/{userId}")
+    @PutMapping("updateCounty")
     public ResponseEntity<?> UpdateCounty(@RequestBody @Valid CountyRequest county,
                                           @PathVariable("userId") long userId,
                                           BindingResult bindingResult,
@@ -2967,10 +2940,10 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PostMapping("/softDeleteCounty/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteCounty(@PathVariable Long recordId,
-                                              @PathVariable Boolean isDeleted,
-                                              @PathVariable("userId") long userId,
+    @PostMapping("softDeleteCounty")
+    public ResponseEntity<?> softDeleteCounty(@RequestParam Long recordId,
+                                              @RequestParam Boolean isDeleted,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Mark County '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -2995,9 +2968,9 @@ public class AgentController {
 
     }
 
-    @PutMapping("/deleteCounty/{recordId}/{userId}")
-    public ResponseEntity<?> deleteCounty(@PathVariable Long recordId,
-                                          @PathVariable("userId") long userId,
+    @PutMapping("deleteCounty")
+    public ResponseEntity<?> deleteCounty(@RequestParam Long recordId,
+                                          @RequestParam("userId") long userId,
                                           HttpServletRequest request){
         logger.info(String.format("Delete County with ID '%s' by user with id %s",recordId, userId));
         try {
@@ -3023,9 +2996,9 @@ public class AgentController {
 
     //region parishes
 
-    @GetMapping("/getParishById/{id}/{userId}")
-    public ResponseEntity<?> getParishById(@PathVariable("id") long id,
-                                           @PathVariable("userId") long userId,
+    @GetMapping("getParishById")
+    public ResponseEntity<?> getParishById(@RequestParam("id") long id,
+                                           @RequestParam("userId") long userId,
                                            HttpServletRequest request){
 
         logger.info(String.format("Retrieve Parish with ID '%s' by user with id %s" ,id, userId));
@@ -3058,9 +3031,9 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/ getParishByName/{name}/{userId}")
-    public ResponseEntity<?> getParishByName(@PathVariable("name") String name,
-                                             @PathVariable("userId") long userId,
+    @GetMapping("getParishByName")
+    public ResponseEntity<?> getParishByName(@RequestParam("name") String name,
+                                             @RequestParam("userId") long userId,
                                              HttpServletRequest request){
         logger.info(String.format("Retrieve Parish with name '%s' by user with id %s" ,name, userId));
         ParishRequest record;
@@ -3081,8 +3054,8 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getParishes/{userId}")
-    public ResponseEntity<?> getParishes(@PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getParishes")
+    public ResponseEntity<?> getParishes(@RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve all parishes by user with id %s",userId));
 
         List<ParishRequest> records;
@@ -3108,8 +3081,8 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/getActiveParishes/{userId}")
-    public ResponseEntity<?> getActiveParishes(@PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getActiveParishes")
+    public ResponseEntity<?> getActiveParishes(@RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve all parishes by user with id %s",userId));
 
         List<ParishRequest> records;
@@ -3135,9 +3108,9 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PutMapping("/createParish/{userId}")
+    @PutMapping("createParish")
     public ResponseEntity<?> createParish(@RequestBody @Valid ParishRequest parish,
-                                          @PathVariable("userId") long userId,
+                                          @RequestParam("userId") long userId,
                                           BindingResult bindingResult,
                                           HttpServletRequest request){
         logger.info(String.format("Create new parish by user with id %s", userId));
@@ -3179,9 +3152,9 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PutMapping("/UpdateParish/{userId}")
+    @PutMapping("updateParish")
     public ResponseEntity<?> UpdateParish(@RequestBody @Valid ParishRequest parish,
-                                          @PathVariable("userId") long userId,
+                                          @RequestParam("userId") long userId,
                                           BindingResult bindingResult,
                                           HttpServletRequest request){
         logger.info(String.format("Modification of parish by user with id %s", userId));
@@ -3230,10 +3203,10 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PostMapping("/softDeleteParish/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteParish(@PathVariable Long recordId,
-                                              @PathVariable Boolean isDeleted,
-                                              @PathVariable("userId") long userId,
+    @PostMapping("softDeleteParish")
+    public ResponseEntity<?> softDeleteParish(@RequestParam Long recordId,
+                                              @RequestParam Boolean isDeleted,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Mark Parish '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -3258,9 +3231,9 @@ public class AgentController {
 
     }
 
-    @PutMapping("/deleteParish/{recordId}/{userId}")
-    public ResponseEntity<?> deleteParish(@PathVariable Long recordId,
-                                          @PathVariable("userId") long userId,
+    @PutMapping("deleteParish")
+    public ResponseEntity<?> deleteParish(@RequestParam Long recordId,
+                                          @RequestParam("userId") long userId,
                                           HttpServletRequest request){
         logger.info(String.format("Delete Parish with ID '%s' by user with id %s",recordId, userId));
         try {
@@ -3285,9 +3258,9 @@ public class AgentController {
     //endregion
 
     //region districts
-    @GetMapping("/getDistrictById/{id}/{userId}")
-    public ResponseEntity<?> getDistrictById(@PathVariable("id") long id,
-                                             @PathVariable("userId") long userId,
+    @GetMapping("getDistrictById")
+    public ResponseEntity<?> getDistrictById(@RequestParam("id") long id,
+                                             @RequestParam("userId") long userId,
                                              HttpServletRequest request){
 
         logger.info(String.format("Retrieve District with ID '%s' by user with id %s" ,id, userId));
@@ -3320,9 +3293,9 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getDistrictByName/{name}/{userId}")
-    public ResponseEntity<?> getDistrictByName(@PathVariable("name") String name,
-                                               @PathVariable("userId") long userId,
+    @GetMapping("getDistrictByName")
+    public ResponseEntity<?> getDistrictByName(@RequestParam("name") String name,
+                                               @RequestParam("userId") long userId,
                                                HttpServletRequest request){
         logger.info(String.format("Retrieve District with name '%s' by user with id %s" ,name, userId));
         DistrictRequest record;
@@ -3343,8 +3316,8 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getAllDistricts/{userId}")
-    public ResponseEntity<?>getAllDistricts(@PathVariable("userId") long userId,
+    @GetMapping("getAllDistricts")
+    public ResponseEntity<?>getAllDistricts(@RequestParam("userId") long userId,
                                             HttpServletRequest request){
         logger.info(String.format("Retrieve all Districts by user with id %s",userId));
 
@@ -3371,9 +3344,9 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PutMapping("/createDistrict/{userId}")
+    @PutMapping("createDistrict")
     public ResponseEntity<?> createDistrict(@RequestBody @Valid DistrictRequest district,
-                                            @PathVariable("userId") long userId,
+                                            @RequestParam("userId") long userId,
                                             BindingResult bindingResult,
                                             HttpServletRequest request){
         logger.info(String.format("Create new district by user with id %s", userId));
@@ -3414,9 +3387,9 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PutMapping("/UpdateDistrict/{userId}")
+    @PutMapping("updateDistrict")
     public ResponseEntity<?> UpdateDistrict(@RequestBody @Valid DistrictRequest district,
-                                            @PathVariable("userId") long userId,
+                                            @RequestParam("userId") long userId,
                                             BindingResult bindingResult,
                                             HttpServletRequest request){
         logger.info(String.format("Modification of district by user with id %s", userId));
@@ -3464,10 +3437,10 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/softDeleteDistrict/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteDistrict(@PathVariable Long recordId,
-                                                @PathVariable Boolean isDeleted,
-                                                @PathVariable("userId") long userId,
+    @PostMapping("softDeleteDistrict")
+    public ResponseEntity<?> softDeleteDistrict(@RequestParam Long recordId,
+                                                @RequestParam Boolean isDeleted,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
         logger.info(String.format("Mark District '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -3490,9 +3463,9 @@ public class AgentController {
         }
 
     }
-    @PutMapping("/deleteDistrict/{recordId}/{userId}")
-    public ResponseEntity<?> deleteDistrict(@PathVariable Long recordId,
-                                            @PathVariable("userId") long userId,
+    @PutMapping("deleteDistrict")
+    public ResponseEntity<?> deleteDistrict(@RequestParam Long recordId,
+                                            @RequestParam("userId") long userId,
                                             HttpServletRequest request){
         logger.info(String.format("Delete District with ID '%s' by user with id %s",recordId, userId));
         try {
@@ -3518,10 +3491,10 @@ public class AgentController {
 
     //region Nature of business
 
-    @GetMapping("/getNatureOfBusinessById/{id}/{userId}")
-    public ResponseEntity<?> getNatureOfBusinessById(@PathVariable("id") long id,
-                                           @PathVariable("userId") long userId,
-                                           HttpServletRequest request){
+    @GetMapping("getNatureOfBusinessById")
+    public ResponseEntity<?> getNatureOfBusinessById(@RequestParam("id") long id,
+                                                     @RequestParam("userId") long userId,
+                                                      HttpServletRequest request){
 
         logger.info(String.format("Retrieve Business Nature with ID '%s' by user with id %s" ,id, userId));
         BusinessNatureRequest record;
@@ -3553,10 +3526,10 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/ getNatureOfBusinessByName/{nature}/{userId}")
-    public ResponseEntity<?> getNatureOfBusinessByName(@PathVariable("nature") String nature,
-                                             @PathVariable("userId") long userId,
-                                             HttpServletRequest request){
+    @GetMapping("getNatureOfBusinessByName")
+    public ResponseEntity<?> getNatureOfBusinessByName(@RequestParam("nature") String nature,
+                                                       @RequestParam("userId") long userId,
+                                                        HttpServletRequest request){
         logger.info(String.format("Retrieve BusinessNature with name '%s' by user with id %s" ,nature, userId));
         BusinessNatureRequest record;
         try {
@@ -3576,8 +3549,8 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getNatureOfBusiness/{userId}")
-    public ResponseEntity<?> getNatureOfBusiness(@PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getNatureOfBusiness")
+    public ResponseEntity<?> getNatureOfBusiness(@RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve all parishes by user with id %s",userId));
 
         List<ParishRequest> records;
@@ -3603,8 +3576,8 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/getActiveNatureOfBusiness/{userId}")
-    public ResponseEntity<?> getActiveNatureOfBusiness(@PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getActiveNatureOfBusiness")
+    public ResponseEntity<?> getActiveNatureOfBusiness(@RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve all BusinessNature by user with id %s",userId));
 
         List<BusinessNatureRequest> records;
@@ -3630,55 +3603,55 @@ public class AgentController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PutMapping("/createNatureOfBusiness/{userId}")
+    @PutMapping("createNatureOfBusiness")
     public ResponseEntity<?> createNatureOfBusiness(@RequestBody @Valid BusinessNatureRequest businessNature,
-                                          @PathVariable("userId") long userId,
-                                          BindingResult bindingResult,
-                                          HttpServletRequest request){
-        logger.info(String.format("Create new BusinessNature by user with id %s", userId));
+                                                    @RequestParam("userId") long userId,
+                                                    BindingResult bindingResult,
+                                                    HttpServletRequest request){
+                logger.info(String.format("Create new BusinessNature by user with id %s", userId));
 
-        // Validate request object
-        if (bindingResult.hasErrors()) {
-            return exceptionHandler.validationExceptionHandler(
-                    new ValidationException(Generators.buildErrorMessage(bindingResult)),
-                    request);
-        }
+                // Validate request object
+                if (bindingResult.hasErrors()) {
+                    return exceptionHandler.validationExceptionHandler(
+                            new ValidationException(Generators.buildErrorMessage(bindingResult)),
+                            request);
+                }
 
-        BusinessNatureRequest record;
-        try {
-            //check whether BusinessNature name is not in use
-            String name = businessNature.getNature();
-            logger.info(String.format("Checking whether parish assigned name '%s' is not in use.", name));
-            CompletableFuture<Boolean> recordExists = this.parishes.existsByName(name);
-            boolean exists = recordExists.join();
-            if(exists){
-                logger.info(String.format("Resource Conflict! Another BusinessNature with name '%s' exists", name));
-                return exceptionHandler.duplicatesResourceExceptionHandler(
-                        new DuplicateException("BusinessNature", "Name", name),
-                        request);
+                BusinessNatureRequest record;
+                try {
+                    //check whether BusinessNature name is not in use
+                    String name = businessNature.getNature();
+                    logger.info(String.format("Checking whether parish assigned name '%s' is not in use.", name));
+                    CompletableFuture<Boolean> recordExists = this.parishes.existsByName(name);
+                    boolean exists = recordExists.join();
+                    if(exists){
+                        logger.info(String.format("Resource Conflict! Another BusinessNature with name '%s' exists", name));
+                        return exceptionHandler.duplicatesResourceExceptionHandler(
+                                new DuplicateException("BusinessNature", "Name", name),
+                                request);
+                    }
+
+                    //..return create record
+                    CompletableFuture<BusinessNatureRequest> natureRecord = this.natureService.create(businessNature);
+                    record = natureRecord.join();
+                } catch (Exception e) {
+                    return exceptionHandler.errorHandler(
+                            new GeneralException(e.getMessage()),request);
+                }
+
+                if (record == null || record.getId() == 0) {
+                    return exceptionHandler.errorHandler(
+                            new GeneralException("An error occurred while saving BusinessNature"),request);
+                }
+
+                return new ResponseEntity<>(record, HttpStatus.OK);
             }
 
-            //..return create record
-            CompletableFuture<BusinessNatureRequest> natureRecord = this.natureService.create(businessNature);
-            record = natureRecord.join();
-        } catch (Exception e) {
-            return exceptionHandler.errorHandler(
-                    new GeneralException(e.getMessage()),request);
-        }
-
-        if (record == null || record.getId() == 0) {
-            return exceptionHandler.errorHandler(
-                    new GeneralException("An error occurred while saving BusinessNature"),request);
-        }
-
-        return new ResponseEntity<>(record, HttpStatus.OK);
-    }
-
-    @PutMapping("/UpdateNatureOfBusiness/{userId}")
+    @PutMapping("updateNatureOfBusiness")
     public ResponseEntity<?> UpdateNatureOfBusiness(@RequestBody @Valid BusinessNatureRequest businessNature,
-                                          @PathVariable("userId") long userId,
-                                          BindingResult bindingResult,
-                                          HttpServletRequest request){
+                                                    @RequestParam("userId") long userId,
+                                                     BindingResult bindingResult,
+                                                     HttpServletRequest request){
         logger.info(String.format("Modification of BusinessNature by user with id %s", userId));
 
         // Validate request object
@@ -3725,11 +3698,11 @@ public class AgentController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PostMapping("/softDeleteNatureOfBusiness/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteNatureOfBusiness(@PathVariable Long recordId,
-                                              @PathVariable Boolean isDeleted,
-                                              @PathVariable("userId") long userId,
-                                              HttpServletRequest request){
+    @PostMapping("softDeleteNatureOfBusiness")
+    public ResponseEntity<?> softDeleteNatureOfBusiness(@RequestParam Long recordId,
+                                                        @RequestParam Boolean isDeleted,
+                                                        @RequestParam("userId") long userId,
+                                                         HttpServletRequest request){
         logger.info(String.format("Mark BusinessNature '%s' as deleted by user with id %s" ,recordId, userId));
 
         try {
@@ -3751,10 +3724,10 @@ public class AgentController {
         }
 
     }
-    @PutMapping("/deleteNatureOfBusiness/{recordId}/{userId}")
-    public ResponseEntity<?> deleteNatureOfBusiness(@PathVariable Long recordId,
-                                          @PathVariable("userId") long userId,
-                                          HttpServletRequest request){
+    @PutMapping("deleteNatureOfBusiness")
+    public ResponseEntity<?> deleteNatureOfBusiness(@RequestParam Long recordId,
+                                                    @RequestParam("userId") long userId,
+                                                    HttpServletRequest request){
         logger.info(String.format("Delete BusinessNature with ID '%s' by user with id %s",recordId, userId));
         try {
             CompletableFuture<BusinessNatureRequest> nature = this.natureService.findBusinessNatureById(recordId);
@@ -3779,8 +3752,8 @@ public class AgentController {
 
     //region Settings
 
-    @GetMapping("/ findSettingsByParamName/{paramName}")
-    public ResponseEntity<?> findSettingsByParamName(@PathVariable("paramName") String paramName,
+    @GetMapping("findSettingsByParamName")
+    public ResponseEntity<?> findSettingsByParamName(@RequestParam("paramName") String paramName,
                                                      HttpServletRequest request){
         SettingsRequest config;
         try {
@@ -4004,11 +3977,10 @@ public class AgentController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PostMapping("/softDeleteSetting/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteSetting(@PathVariable Long recordId,
-                                               @PathVariable Boolean isDeleted,
-                                               @PathVariable("userId") long userId,
+    @PostMapping("softDeleteSetting")
+    public ResponseEntity<?> softDeleteSetting(@RequestParam Long recordId,
+                                               @RequestParam Boolean isDeleted,
+                                               @RequestParam("userId") long userId,
                                                HttpServletRequest request){
         logger.info(String.format("Mark Settings '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -4032,9 +4004,9 @@ public class AgentController {
         }
 
     }
-    @DeleteMapping("/deleteSettings/{recordId}/{userId}")
-    public ResponseEntity<?> deleteSettings(@PathVariable Long recordId,
-                                            @PathVariable("userId") long userId,
+    @DeleteMapping("deleteSettings")
+    public ResponseEntity<?> deleteSettings(@RequestParam Long recordId,
+                                            @RequestParam("userId") long userId,
                                             HttpServletRequest request){
         logger.info(String.format("Delete Settings '%s' as deleted by user with id %s" ,recordId, userId));
 

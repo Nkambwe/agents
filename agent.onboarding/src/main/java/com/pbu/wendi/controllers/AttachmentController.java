@@ -45,8 +45,8 @@ public class AttachmentController  {
 
     //region attachments
 
-    @GetMapping("/findAttachment/{id}/{userId}")
-    public ResponseEntity<?> findAttachment(@PathVariable("id") long id, @PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("findAttachment")
+    public ResponseEntity<?> findAttachment(@RequestParam("id") long id, @RequestParam("userId") long userId, HttpServletRequest request){
         try {
 
             CompletableFuture<AttachmentRequest> result = this.service.findAttachmentById(id);
@@ -79,8 +79,8 @@ public class AttachmentController  {
         }
     }
 
-    @GetMapping("/getAttachments/{ownerId}/{userId}")
-    public ResponseEntity<?>getAttachments(@PathVariable("ownerId") long ownerId, @PathVariable("userId") long userId, HttpServletRequest request) {
+    @GetMapping("getAttachments")
+    public ResponseEntity<?>getAttachments(@RequestParam("ownerId") long ownerId, @RequestParam("userId") long userId, HttpServletRequest request) {
         String log = String.format("Retrieving a list of attachments for owner with Owner ID %s", ownerId);
         logger.info(log);
 
@@ -103,8 +103,8 @@ public class AttachmentController  {
         }
     }
 
-    @GetMapping("/checkAttachment/{id}/{userId}")
-    public ResponseEntity<?>checkAttachment(@PathVariable("id") long id, @PathVariable("userId") long userId, HttpServletRequest request) {
+    @GetMapping("checkAttachment")
+    public ResponseEntity<?>checkAttachment(@RequestParam("id") long id, @RequestParam("userId") long userId, HttpServletRequest request) {
         String log = String.format("Check if attachment with id. '%s' exists", id);
         logger.info(log);
         try {
@@ -129,8 +129,8 @@ public class AttachmentController  {
         }
     }
 
-    @PostMapping("/createAttachments/{userId}")
-    public ResponseEntity<?> createAttachments(@PathVariable("userId") long userId, @RequestBody @Valid AttachmentRequest[] attachments, BindingResult bindingResult, HttpServletRequest request) {
+    @PostMapping("createAttachments")
+    public ResponseEntity<?> createAttachments(@RequestParam("userId") long userId, @RequestBody @Valid AttachmentRequest[] attachments, BindingResult bindingResult, HttpServletRequest request) {
         //..creation date
         String log = "Creating file attachments";
         logger.info(log);
@@ -172,8 +172,8 @@ public class AttachmentController  {
         }
     }
 
-    @PutMapping("/updateAttachment/{userId}")
-    public ResponseEntity<?> updateAttachment(@PathVariable("userId") long userId, @RequestBody @Valid AttachmentRequest attachment, BindingResult bindingResult, HttpServletRequest request){
+    @PutMapping("updateAttachment")
+    public ResponseEntity<?> updateAttachment(@RequestParam("userId") long userId, @RequestBody @Valid AttachmentRequest attachment, BindingResult bindingResult, HttpServletRequest request){
         String log = String.format("Modifying ID Type with name '%s'",attachment.getAttDescr());
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -219,8 +219,8 @@ public class AttachmentController  {
         }
     }
 
-    @DeleteMapping("/softDeleteAttachment/{id}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteAttachment(@PathVariable Long id, @PathVariable boolean isDeleted, @PathVariable("userId") long userId, HttpServletRequest request) {
+    @DeleteMapping("softDeleteAttachment")
+    public ResponseEntity<?> softDeleteAttachment(@RequestParam Long id, @RequestParam boolean isDeleted, @RequestParam("userId") long userId, HttpServletRequest request) {
         String log = String.format("Deleting attachment record. Attachment with id %s is_deleted set to %s",id, isDeleted ? "True" : "False");
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -240,8 +240,8 @@ public class AttachmentController  {
         return new ResponseEntity<>("Attachment updated successfully", HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteAttachment/{id}/{userId}")
-    public ResponseEntity<?> deleteAttachment(@PathVariable Long id, @PathVariable("userId") long userId, HttpServletRequest request) {
+    @DeleteMapping("deleteAttachment")
+    public ResponseEntity<?> deleteAttachment(@RequestParam Long id, @RequestParam("userId") long userId, HttpServletRequest request) {
         String log = String.format("Deleting attachment record. Attachment id %s is being deleted",id);
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -265,8 +265,8 @@ public class AttachmentController  {
 
     //region ID Types
 
-    @GetMapping("/ findType/{id}/{userId}")
-    public ResponseEntity<?> findType(@PathVariable("id") long id, @PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("findType")
+    public ResponseEntity<?> findType(@RequestParam("id") long id, @RequestParam("userId") long userId, HttpServletRequest request){
         try {
             String log = String.format("Retrieve ID type with %s", id);
             logger.info(log);
@@ -298,8 +298,8 @@ public class AttachmentController  {
         }
     }
 
-    @GetMapping("/getTypes/{userId}")
-    public ResponseEntity<?> getTypes(HttpServletRequest request, @PathVariable("userId") long userId) {
+    @GetMapping("getTypes")
+    public ResponseEntity<?> getTypes(HttpServletRequest request, @RequestParam("userId") long userId) {
         String log = "Retrieving a list of all identifications types";
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -321,8 +321,8 @@ public class AttachmentController  {
         }
     }
 
-    @GetMapping("/checkType/{id}/{userId}")
-    public ResponseEntity<?> checkType(@PathVariable("id") long id, @PathVariable("userId") long userId, HttpServletRequest request) {
+    @GetMapping("checkType")
+    public ResponseEntity<?> checkType(@RequestParam("id") long id, @RequestParam("userId") long userId, HttpServletRequest request) {
         String log = String.format("Check if ID type with ID '%s' exists", id);
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -347,8 +347,8 @@ public class AttachmentController  {
         }
     }
 
-    @PostMapping("/createType/{userId}")
-    public ResponseEntity<?> createIdType(@RequestBody @Valid TypeRequest idType, @PathVariable("userId") long userId, BindingResult bindingResult, HttpServletRequest request) {
+    @PostMapping("createType")
+    public ResponseEntity<?> createIdType(@RequestBody @Valid TypeRequest idType, @RequestParam("userId") long userId, BindingResult bindingResult, HttpServletRequest request) {
         //..creation date
         String log = String.format("Creating new ID Type %s", idType.getTypeName());
         logger.info(log);
@@ -401,8 +401,8 @@ public class AttachmentController  {
         }
     }
 
-    @PutMapping("/updateType/{userId}")
-    public ResponseEntity<?> updateType(@RequestBody @Valid TypeRequest idType, @PathVariable("userId") long userId, BindingResult bindingResult, HttpServletRequest request){
+    @PutMapping("updateType")
+    public ResponseEntity<?> updateType(@RequestBody @Valid TypeRequest idType, @RequestParam("userId") long userId, BindingResult bindingResult, HttpServletRequest request){
         String log = String.format("Modifying ID Type with name %s",idType.getTypeName());
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -446,8 +446,8 @@ public class AttachmentController  {
         }
     }
 
-    @DeleteMapping("/softDeleteType/{id}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteType(@PathVariable Long id, @PathVariable boolean isDeleted, @PathVariable("userId") long userId, HttpServletRequest request) {
+    @DeleteMapping("softDeleteType")
+    public ResponseEntity<?> softDeleteType(@RequestParam Long id, @RequestParam boolean isDeleted, @RequestParam("userId") long userId, HttpServletRequest request) {
         String log = String.format("Deleting ID Type record. ID Type with id %s is_deleted set to %s",id, isDeleted ?"True":"False");
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -469,8 +469,8 @@ public class AttachmentController  {
         return new ResponseEntity<>("ID Type updated successfully", HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteType/{id}/{userId}")
-    public ResponseEntity<?> deleteType(@PathVariable Long id, @PathVariable("userId") long userId, HttpServletRequest request) {
+    @DeleteMapping("/deleteType")
+    public ResponseEntity<?> deleteType(@RequestParam Long id, @RequestParam("userId") long userId, HttpServletRequest request) {
         String log = String.format("Deleting ID Type record. ID with id %s is being deleted",id);
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -496,8 +496,8 @@ public class AttachmentController  {
 
     //region Identifications
 
-    @GetMapping("/ findIdentification/{id}/{userId}")
-    public ResponseEntity<?> findIdentification(@PathVariable("id") long id, @PathVariable("userId") long userId,HttpServletRequest request){
+    @GetMapping("findIdentification")
+    public ResponseEntity<?> findIdentification(@RequestParam("id") long id, @RequestParam("userId") long userId,HttpServletRequest request){
         try {
             String log = String.format("Retrieve Identification with ID'%s'", id);
             logger.info(log);
@@ -530,8 +530,8 @@ public class AttachmentController  {
         }
     }
 
-    @GetMapping("/getIdentifications/{ownerId}/{userId}")
-    public ResponseEntity<?> getIdentifications(@PathVariable Long ownerId, @PathVariable("userId") long userId,HttpServletRequest request) {
+    @GetMapping("getIdentifications")
+    public ResponseEntity<?> getIdentifications(@RequestParam Long ownerId, @RequestParam("userId") long userId,HttpServletRequest request) {
         String log = String.format("Retrieving a list of identifications for owner with Owner ID %s", ownerId);
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -552,8 +552,8 @@ public class AttachmentController  {
         }
     }
 
-    @GetMapping("/checkIdentification/{idNumber}/{userId}")
-    public ResponseEntity<?> checkIdentification(@PathVariable("idNumber") String idNumber, @PathVariable("userId") long userId,HttpServletRequest request) {
+    @GetMapping("checkIdentification")
+    public ResponseEntity<?> checkIdentification(@RequestParam("idNumber") String idNumber, @RequestParam("userId") long userId,HttpServletRequest request) {
         String log = String.format("Check if ID document with ID No. '%s' exists", idNumber);
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -578,8 +578,8 @@ public class AttachmentController  {
         }
     }
 
-    @PostMapping("/createIdentification/{userId}")
-    public ResponseEntity<?> createId(@RequestBody @Valid IdentificationRequest identification, @PathVariable("userId") long userId,BindingResult bindingResult, HttpServletRequest request) {
+    @PostMapping("createIdentification")
+    public ResponseEntity<?> createId(@RequestBody @Valid IdentificationRequest identification, @RequestParam("userId") long userId,BindingResult bindingResult, HttpServletRequest request) {
         //..creation date
         String log = String.format("Creating new ID Document %s", identification.getIdNo());
         logger.info(log);
@@ -634,8 +634,8 @@ public class AttachmentController  {
         }
     }
 
-    @PutMapping("/updateIdentification/{userId}")
-    public ResponseEntity<?> updateId(@RequestBody @Valid IdentificationRequest identification, @PathVariable("userId") long userId,BindingResult bindingResult, HttpServletRequest request){
+    @PutMapping("updateIdentification")
+    public ResponseEntity<?> updateId(@RequestBody @Valid IdentificationRequest identification, @RequestParam("userId") long userId,BindingResult bindingResult, HttpServletRequest request){
         String log = String.format("Modifying Identification Document with no. %s",identification.getIdNo());
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -678,8 +678,8 @@ public class AttachmentController  {
         }
     }
 
-    @DeleteMapping("/softDeleteIdentification/{id}/{isDeleted}/{userId}")
-    public ResponseEntity<?> softDeleteIdentification(@PathVariable Long id, @PathVariable boolean isDeleted, @PathVariable("userId") long userId, HttpServletRequest request) {
+    @DeleteMapping("softDeleteIdentification")
+    public ResponseEntity<?> softDeleteIdentification(@RequestParam Long id, @RequestParam boolean isDeleted, @RequestParam("userId") long userId, HttpServletRequest request) {
         String log = String.format("Deleting Identification record. Identification with id %s is_deleted set to %s",id, isDeleted ?"True":"False");
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);
@@ -701,8 +701,8 @@ public class AttachmentController  {
         return new ResponseEntity<>("Identification updated successfully", HttpStatus.OK);
     }
 
-    @DeleteMapping("/deleteIdentification/{id}/{userId}")
-    public ResponseEntity<?> deleteIdentification(@PathVariable Long id, @PathVariable("userId") long userId, HttpServletRequest request) {
+    @DeleteMapping("deleteIdentification")
+    public ResponseEntity<?> deleteIdentification(@RequestParam Long id, @RequestParam("userId") long userId, HttpServletRequest request) {
         String log = String.format("Deleting identification record. Identification id %s is being deleted",id);
         logger.info(log);
         String ip = networkService.getIncomingIpAddress(request);

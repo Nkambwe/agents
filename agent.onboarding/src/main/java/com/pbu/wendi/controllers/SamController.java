@@ -69,8 +69,8 @@ public class SamController {
 
     //region apps
 
-    @GetMapping("/getAppWithId/{id}/{userId}")
-    public ResponseEntity<?>getAppWithId(@PathVariable("id") long id, @PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getAppWithId")
+    public ResponseEntity<?>getAppWithId(@RequestParam("id") long id, @RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve app with id %s by user with id %s", id, userId));
         //try finding resource
         String ip = networkService.getIncomingIpAddress(request);
@@ -102,8 +102,8 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getAppWithName/{appName}/{userId}")
-    public ResponseEntity<?>getAppWithName(@PathVariable("appName") String appName, @PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getAppWithName")
+    public ResponseEntity<?>getAppWithName(@RequestParam("appName") String appName, @RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve app with name %s by user with id %s", appName, userId));
         //try finding resource
         String ip = networkService.getIncomingIpAddress(request);
@@ -135,8 +135,8 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getAllUserApps/{userId}")
-    public ResponseEntity<?>getAllUserApps(@PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getAllUserApps")
+    public ResponseEntity<?>getAllUserApps(@RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve all apps for user with id %s", userId));
         //try finding resource
         String ip = networkService.getIncomingIpAddress(request);
@@ -167,8 +167,8 @@ public class SamController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PostMapping("/createApp/{userId}")
-    public ResponseEntity<?> createApp(@RequestBody @Valid AppRequest app, @PathVariable("userId") long userId,
+    @PostMapping("createApp")
+    public ResponseEntity<?> createApp(@RequestBody @Valid AppRequest app, @RequestParam("userId") long userId,
                                        BindingResult bindingResult, HttpServletRequest request) {
         logger.info(String.format("Create new app record by user with ID %s", userId));
 
@@ -209,9 +209,9 @@ public class SamController {
 
     //region branches
 
-    @GetMapping("/getBranchWithId/{branchId}/{userId}")
-    public ResponseEntity<?>getBranchWithId(@PathVariable("branchId") long branchId,
-                                            @PathVariable("userId") long userId,
+    @GetMapping("getBranchWithId")
+    public ResponseEntity<?>getBranchWithId(@RequestParam("branchId") long branchId,
+                                            @RequestParam("userId") long userId,
                                             HttpServletRequest request){
         logger.info(String.format("Retrieve branch with id %s by user with id %s", branchId, userId));
         //try finding resource
@@ -241,9 +241,9 @@ public class SamController {
         //return branch record
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getBranchWithSolId/{solId}/{userId}")
-    public ResponseEntity<?>getBranchWithSolId(@PathVariable("solId") String solId,
-                                               @PathVariable("userId") long userId,
+    @GetMapping("getBranchWithSolId")
+    public ResponseEntity<?>getBranchWithSolId(@RequestParam("solId") String solId,
+                                               @RequestParam("userId") long userId,
                                                HttpServletRequest request){
         logger.info(String.format("Retrieve branch with Solid %s by user with id %s", solId, userId));
         //try finding resource
@@ -275,9 +275,9 @@ public class SamController {
         //return branch record
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getBranchWithName/{branchName}/{userId}")
-    public ResponseEntity<?>getBranchWithName(@PathVariable("branchName") String name,
-                                              @PathVariable("userId") long userId,
+    @GetMapping("getBranchWithName")
+    public ResponseEntity<?>getBranchWithName(@RequestParam("branchName") String name,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Retrieve branch with name %s by user with id %s", name, userId));
         //try finding resource
@@ -309,8 +309,8 @@ public class SamController {
         //return branch record
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getBranches/{userId}")
-    public ResponseEntity<?>getBranches(@PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getBranches")
+    public ResponseEntity<?>getBranches(@RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve all branches for user with id %s", userId));
         //try finding resource
         String ip = networkService.getIncomingIpAddress(request);
@@ -341,9 +341,9 @@ public class SamController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PostMapping("/createBranch/{userId}")
+    @PostMapping("createBranch")
     public ResponseEntity<?> createBranch(@RequestBody @Valid BranchRequest branch,
-                                          @PathVariable("userId") long userId,
+                                          @RequestParam("userId") long userId,
                                           BindingResult bindingResult,
                                           HttpServletRequest request) {
         // Validate request object
@@ -400,10 +400,9 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PostMapping("/updateBranch/{userId}")
+    @PostMapping("updateBranch")
     public ResponseEntity<?> updateBranch(@RequestBody @Valid BranchRequest branch,
-                                          @PathVariable("userId") long userId,
+                                          @RequestParam("userId") long userId,
                                           BindingResult bindingResult, HttpServletRequest request){
         // Validate request object
         if (bindingResult.hasErrors()) {
@@ -469,10 +468,9 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PostMapping("/deleteBranch/{branchId}/{userId}")
-    public ResponseEntity<?>deleteBranch(@PathVariable Long branchId,
-                                         @PathVariable("userId") long userId,
+    @PostMapping("deleteBranch")
+    public ResponseEntity<?>deleteBranch(@RequestParam Long branchId,
+                                         @RequestParam("userId") long userId,
                                          HttpServletRequest request){
         logger.info(String.format("Delete branch with ID '%s' by user with id %s" ,branchId, userId));
 
@@ -501,11 +499,10 @@ public class SamController {
         }
 
     }
-
-    @PostMapping("/activateBranch/{branchId}/{active}/{userId}")
-    public ResponseEntity<?>activateBranch(@PathVariable Long branchId,
-                                           @PathVariable Boolean active,
-                                           @PathVariable("userId") long userId,
+    @PostMapping("activateBranch")
+    public ResponseEntity<?>activateBranch(@RequestParam Long branchId,
+                                           @RequestParam Boolean active,
+                                           @RequestParam("userId") long userId,
                                            HttpServletRequest request){
         logger.info(String.format("Modify branch active status by user with id %s", userId));
         //try finding resource
@@ -533,11 +530,10 @@ public class SamController {
         }
 
     }
-
-    @PostMapping("/softDeleteBranch/{branchId}/{isDeleted}/{userId}")
-    public ResponseEntity<?>softDeleteBranch(@PathVariable Long branchId,
-                                             @PathVariable Boolean isDeleted,
-                                             @PathVariable("userId") long userId,
+    @PostMapping("softDeleteBranch")
+    public ResponseEntity<?>softDeleteBranch(@RequestParam Long branchId,
+                                             @RequestParam Boolean isDeleted,
+                                             @RequestParam("userId") long userId,
                                              HttpServletRequest request){
         logger.info(String.format("Mark branch '%s' as deleted by user with id %s" ,branchId, userId));
 
@@ -566,13 +562,12 @@ public class SamController {
         }
 
     }
-
     //endregion
 
     //region permissions
-    @GetMapping("/getPermissionById/{permissionId}/{userId}")
-    public ResponseEntity<?> getPermissionById(@PathVariable Long permissionId,
-                                               @PathVariable Long userId,
+    @GetMapping("getPermissionById")
+    public ResponseEntity<?> getPermissionById(@RequestParam Long permissionId,
+                                               @RequestParam Long userId,
                                                HttpServletRequest request){
 
         logger.info(String.format("Retrieve permission record with ID '%s' by user with ID '%s'" ,permissionId, userId));
@@ -601,8 +596,8 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getPermissions/{userId}")
-    public ResponseEntity<?> getPermissions(@PathVariable Long userId,
+    @GetMapping("getPermissions")
+    public ResponseEntity<?> getPermissions(@RequestParam Long userId,
                                             HttpServletRequest request){
         logger.info(String.format("Retrieve all permissions by user with id %s", userId));
         //try finding resource
@@ -634,9 +629,9 @@ public class SamController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/getPermissionById/{permissionSetId}/{userId}")
-    public ResponseEntity<?> getSetPermissions(@PathVariable Long permissionSetId,
-                                               @PathVariable Long userId,
+    @GetMapping("getPermissionById")
+    public ResponseEntity<?> getSetPermissions(@RequestParam Long permissionSetId,
+                                               @RequestParam Long userId,
                                                HttpServletRequest request){
         logger.info(String.format("Retrieve all permissions for a permission set wit ID '%s' by user with id %s", permissionSetId, userId));
         //try finding resource
@@ -668,10 +663,10 @@ public class SamController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/lockSetPermissions/{permissionSetId}/{isLocked}/{userId}")
-    public ResponseEntity<?> lockSetPermissions(@PathVariable Long permissionSetId,
-                                                @PathVariable boolean isLocked,
-                                                @PathVariable Long userId,
+    @GetMapping("lockSetPermissions")
+    public ResponseEntity<?> lockSetPermissions(@RequestParam Long permissionSetId,
+                                                @RequestParam boolean isLocked,
+                                                @RequestParam Long userId,
                                                 HttpServletRequest request){
         logger.info(String.format("Set lock status for permissions assigned to a permission set with ID '%s' to '%s' by user with ID '%s'" ,permissionSetId, isLocked, userId));
         String ip = networkService.getIncomingIpAddress(request);
@@ -696,9 +691,9 @@ public class SamController {
         }
     }
 
-    @PostMapping("/updatePermission/{userId}")
+    @PostMapping("updatePermission")
     public ResponseEntity<?> updatePermission(@RequestBody @Valid PermissionRequest permission,
-                                              @PathVariable("userId") long userId,
+                                              @RequestParam("userId") long userId,
                                               BindingResult bindingResult,
                                               HttpServletRequest request){
         // Validate request object
@@ -769,9 +764,9 @@ public class SamController {
     //endregion
 
     //region permission sets
-    @GetMapping("/getPermissionSet/{userId}")
-    public ResponseEntity<?> getPermissionSet(@PathVariable Long userId,
-                                            HttpServletRequest request){
+    @GetMapping("getPermissionSet")
+    public ResponseEntity<?> getPermissionSet(@RequestParam Long userId,
+                                               HttpServletRequest request){
         logger.info(String.format("Retrieve all permissions sets by user with id %s", userId));
         //try finding resource
         String ip = networkService.getIncomingIpAddress(request);
@@ -802,9 +797,9 @@ public class SamController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/getPermissionSetWithId/{setId}/{userId}")
-    public ResponseEntity<?>getPermissionSetWithId(@PathVariable("setId") long setId,
-                                                   @PathVariable("userId") long userId,
+    @GetMapping("getPermissionSetWithId")
+    public ResponseEntity<?>getPermissionSetWithId(@RequestParam("setId") long setId,
+                                                   @RequestParam("userId") long userId,
                                                    HttpServletRequest request){
         logger.info(String.format("Retrieve permission set with id %s by user with id %s", setId, userId));
         //try finding resource
@@ -835,9 +830,9 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getPermissionSetWithName/{setName}/{userId}")
-    public ResponseEntity<?>getPermissionSetWithName(@PathVariable("setName") String setName,
-                                                     @PathVariable("userId") long userId,
+    @GetMapping("getPermissionSetWithName")
+    public ResponseEntity<?>getPermissionSetWithName(@RequestParam("setName") String setName,
+                                                     @RequestParam("userId") long userId,
                                                      HttpServletRequest request){
         logger.info(String.format("Retrieve permission with name %s by user with id %s", setName, userId));
         //try finding resource
@@ -869,11 +864,10 @@ public class SamController {
         //return branch record
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PostMapping("/softDeletePermissionSet/{setId}/{isDeleted}/{userId}")
-    public ResponseEntity<?>softDeletePermissionSet(@PathVariable Long setId,
-                                                    @PathVariable Boolean isDeleted,
-                                                    @PathVariable("userId") long userId,
+    @PostMapping("softDeletePermissionSet")
+    public ResponseEntity<?>softDeletePermissionSet(@RequestParam Long setId,
+                                                    @RequestParam Boolean isDeleted,
+                                                    @RequestParam("userId") long userId,
                                                     HttpServletRequest request){
         logger.info(String.format("Mark PermissionSet '%s' as deleted by user with id %s" ,setId, userId));
 
@@ -901,11 +895,10 @@ public class SamController {
             return errorHandler.errorHandler(new GeneralException(msg),request);
         }
     }
-
-    @PostMapping("/lockPermissionSet/{setId}/{isLocked}/{userId}")
-    public ResponseEntity<?>lockPermissionSet(@PathVariable Long setId,
-                                              @PathVariable Boolean isLocked,
-                                              @PathVariable("userId") long userId,
+    @PostMapping("lockPermissionSet")
+    public ResponseEntity<?>lockPermissionSet(@RequestParam Long setId,
+                                              @RequestParam Boolean isLocked,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request){
         logger.info(String.format("Modify permissionSet lock status by user with id %s", userId));
         //try finding resource
@@ -933,9 +926,9 @@ public class SamController {
         }
     }
 
-    @PostMapping("/createPermissionSet/{userId}")
+    @PostMapping("createPermissionSet")
     public ResponseEntity<?> createPermissionSet(@RequestBody @Valid SetRequest permissionSet,
-                                                 @PathVariable("userId") long userId,
+                                                 @RequestParam("userId") long userId,
                                                  BindingResult bindingResult,
                                                  HttpServletRequest request){
         // Validate request object
@@ -993,9 +986,9 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PostMapping("/assignPermissionsToPermissionSet/{userId}")
+    @PostMapping("assignPermissionsToPermissionSet")
     public ResponseEntity<?> assignPermissionsToPermissionSet(@RequestBody @Valid SetRequest permissionSet,
-                                                              @PathVariable("userId") long userId,
+                                                              @RequestParam("userId") long userId,
                                                               HttpServletRequest request){
 
         long setId = permissionSet.getId();
@@ -1030,12 +1023,11 @@ public class SamController {
         //return permission set record
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @PostMapping("/updatePermissionSet/{userId}")
+    @PostMapping("updatePermissionSet")
     public ResponseEntity<?> updatePermissionSet(@RequestBody @Valid SetRequest permissionSet,
-                                                 @PathVariable("userId") long userId,
-                                                 BindingResult bindingResult,
-                                                 HttpServletRequest request){
+                                                 @RequestParam("userId") long userId,
+                                                  BindingResult bindingResult,
+                                                  HttpServletRequest request){
         // Validate request object
         if (bindingResult.hasErrors()) {
             return errorHandler.validationExceptionHandler(
@@ -1101,10 +1093,9 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-
-    @GetMapping("/deletePermissionSet/{setId}/{userId}")
-    public ResponseEntity<?>deletePermissionSet(@PathVariable Long setId,
-                                                @PathVariable("userId") long userId,
+    @GetMapping("deletePermissionSet")
+    public ResponseEntity<?>deletePermissionSet(@RequestParam Long setId,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
         logger.info(String.format("Delete permissionSet with ID '%s' by user with id %s" ,setId, userId));
 
@@ -1136,9 +1127,9 @@ public class SamController {
     //endregion
 
     //region role
-    @GetMapping("/getRoleById/{roleId}/{userId}")
-    public ResponseEntity<?> getRoleById(@PathVariable Long roleId,
-                                         @PathVariable Long userId,
+    @GetMapping("getRoleById")
+    public ResponseEntity<?> getRoleById(@RequestParam Long roleId,
+                                         @RequestParam Long userId,
                                          HttpServletRequest request){
 
         logger.info(String.format("Retrieve role record with ID '%s' by user with ID '%s'" ,roleId, userId));
@@ -1166,8 +1157,8 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getRoles/{userId}")
-    public ResponseEntity<?> getRoles(@PathVariable Long userId,
+    @GetMapping("getRoles")
+    public ResponseEntity<?> getRoles(@RequestParam Long userId,
                                       HttpServletRequest request){
         logger.info(String.format("Retrieve all roles by user with id %s", userId));
         //try finding resource
@@ -1198,9 +1189,9 @@ public class SamController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-    @PostMapping("/updateRole/{userId}")
+    @PostMapping("updateRole")
     public ResponseEntity<?> updateRole(@RequestBody @Valid RoleRequest role,
-                                        @PathVariable("userId") long userId,
+                                        @RequestParam("userId") long userId,
                                         BindingResult bindingResult,
                                         HttpServletRequest request){
         // Validate request object
@@ -1266,9 +1257,9 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/assignPermissionSetToRole/{userId}")
+    @PostMapping("assignPermissionSetToRole")
     public ResponseEntity<?> assignPermissionSetToRole(@RequestBody @Valid RoleRequest role,
-                                                       @PathVariable("userId") long userId,
+                                                       @RequestParam("userId") long userId,
                                                        HttpServletRequest request){
         long roleId = role.getId();
         logger.info(String.format("Assign permissions sets to role set with id %s by user with id %s",roleId , userId));
@@ -1302,9 +1293,9 @@ public class SamController {
         //return role record
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/createRole/{userId}")
+    @PostMapping("createRole")
     public ResponseEntity<?> createRole(@RequestBody @Valid RoleRequest role,
-                                        @PathVariable("userId") long userId,
+                                        @RequestParam("userId") long userId,
                                         BindingResult bindingResult,
                                         HttpServletRequest request){
         // Validate request object
@@ -1360,9 +1351,9 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/deleteRole/{roleId}/{userId}")
-    public ResponseEntity<?>deleteRole(@PathVariable Long roleId,
-                                       @PathVariable("userId") long userId,
+    @PostMapping("deleteRole")
+    public ResponseEntity<?>deleteRole(@RequestParam Long roleId,
+                                       @RequestParam("userId") long userId,
                                        HttpServletRequest request){
         logger.info(String.format("Delete role with ID '%s' by user with id %s" ,roleId, userId));
 
@@ -1390,11 +1381,10 @@ public class SamController {
         }
 
     }
-
-    @PostMapping("/softDeleteRole/{roleId}/{isDeleted}/{userId}")
-    public ResponseEntity<?>softDeleteRole(@PathVariable Long roleId,
-                                           @PathVariable Boolean isDeleted,
-                                           @PathVariable("userId") long userId,
+    @PostMapping("softDeleteRole")
+    public ResponseEntity<?>softDeleteRole(@RequestParam Long roleId,
+                                           @RequestParam Boolean isDeleted,
+                                           @RequestParam("userId") long userId,
                                            HttpServletRequest request){
         logger.info(String.format("Mark role '%s' as deleted by user with id %s" ,roleId, userId));
 
@@ -1427,9 +1417,9 @@ public class SamController {
     //endregion
 
     //region users
-    @GetMapping("/getUserWithId/{recordId}/{userId}")
-    public ResponseEntity<?>getUserWithId(@PathVariable("recordId") long recordId,
-                                          @PathVariable("userId") long userId,
+    @GetMapping("getUserWithId")
+    public ResponseEntity<?>getUserWithId(@RequestParam("recordId") long recordId,
+                                          @RequestParam("userId") long userId,
                                           HttpServletRequest request){
         logger.info(String.format("Retrieve user with UserID %s by user with id %s", recordId, userId));
         //try finding resource
@@ -1462,9 +1452,9 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getUserWithUsername/{username}/{userId}")
-    public ResponseEntity<?>getUserWithUsername(@PathVariable("username") String username,
-                                                @PathVariable("userId") long userId,
+    @GetMapping("getUserWithUsername")
+    public ResponseEntity<?>getUserWithUsername(@RequestParam("username") String username,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
         logger.info(String.format("Retrieve user with Username %s by user with id %s", username, userId));
         //try finding resource
@@ -1497,9 +1487,9 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getUserWithEmail/{email}/{userId}")
-    public ResponseEntity<?>getUserWithEmail(@PathVariable("email") String email,
-                                             @PathVariable("userId") long userId,
+    @GetMapping("getUserWithEmail")
+    public ResponseEntity<?>getUserWithEmail(@RequestParam("email") String email,
+                                             @RequestParam("userId") long userId,
                                              HttpServletRequest request){
         logger.info(String.format("Retrieve user with email %s by user with id %s", email, userId));
         //try finding resource
@@ -1532,8 +1522,8 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getLoginInfo/{username}")
-    public ResponseEntity<?>getLoginInfo(@PathVariable("username") String username,
+    @GetMapping("getLoginInfo")
+    public ResponseEntity<?>getLoginInfo(@RequestParam("username") String username,
                                          HttpServletRequest request){
         logger.info(String.format("Retrieve user with Username '%s'", username));
         //try finding resource
@@ -1579,8 +1569,8 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @GetMapping("/getUsers/{userId}")
-    public ResponseEntity<?>getUsers(@PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getUsers")
+    public ResponseEntity<?>getUsers(@RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve all users by user with id %s", userId));
         //try finding resource
         String ip = networkService.getIncomingIpAddress(request);
@@ -1611,8 +1601,8 @@ public class SamController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/getActiveUsers/{userId}")
-    public ResponseEntity<?>getActiveUsers(@PathVariable("userId") long userId, HttpServletRequest request){
+    @GetMapping("getActiveUsers")
+    public ResponseEntity<?>getActiveUsers(@RequestParam("userId") long userId, HttpServletRequest request){
         logger.info(String.format("Retrieve only active user by user with id %s", userId));
         //try finding resource
         String ip = networkService.getIncomingIpAddress(request);
@@ -1643,9 +1633,9 @@ public class SamController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PostMapping("/createUser/{userId}")
+    @PostMapping("createUser")
     public ResponseEntity<?> createUser(@RequestBody @Valid UserRequest user,
-                                        @PathVariable("userId") long userId,
+                                        @RequestParam("userId") long userId,
                                         BindingResult bindingResult,
                                         HttpServletRequest request){
         // Validate request object
@@ -1743,9 +1733,9 @@ public class SamController {
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
 
-    @PostMapping("/updateUser/{userId}")
+    @PostMapping("updateUser")
     public ResponseEntity<?> updateUser(@RequestBody @Valid UserRequest user,
-                                        @PathVariable("userId") long userId,
+                                        @RequestParam("userId") long userId,
                                         BindingResult bindingResult,
                                         HttpServletRequest request){
         // Validate request object
@@ -1843,10 +1833,10 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/activateUser/{recordId}/{activeStatus}/{userId}")
-    public ResponseEntity<?>activateUser(@PathVariable Long recordId,
-                                         @PathVariable Boolean activeStatus,
-                                         @PathVariable("userId") long userId,
+    @PostMapping("activateUser")
+    public ResponseEntity<?>activateUser(@RequestParam Long recordId,
+                                         @RequestParam Boolean activeStatus,
+                                         @RequestParam("userId") long userId,
                                          HttpServletRequest request){
         logger.info(String.format("Activate user with ID '%s' by user with id %s" ,recordId, userId));
 
@@ -1882,10 +1872,10 @@ public class SamController {
             return errorHandler.errorHandler(new GeneralException(msg),request);
         }
     }
-    @PostMapping("/verifyUser/{recordId}/{verified}/{userId}")
-    public ResponseEntity<?>verifyUser(@PathVariable Long recordId,
-                                         @PathVariable Boolean verified,
-                                         @PathVariable("userId") long userId,
+    @PostMapping("verifyUser")
+    public ResponseEntity<?>verifyUser(@RequestParam Long recordId,
+                                         @RequestParam Boolean verified,
+                                         @RequestParam("userId") long userId,
                                          HttpServletRequest request){
         logger.info(String.format("Verify user with ID '%s' by user with id %s" ,recordId, userId));
 
@@ -1922,9 +1912,9 @@ public class SamController {
             return errorHandler.errorHandler(new GeneralException(msg),request);
         }
     }
-    @PostMapping("/deleteUser/{recordId}/{userId}")
-    public ResponseEntity<?>deleteUser(@PathVariable Long recordId,
-                                       @PathVariable("userId") long userId,
+    @PostMapping("deleteUser")
+    public ResponseEntity<?>deleteUser(@RequestParam Long recordId,
+                                       @RequestParam("userId") long userId,
                                        HttpServletRequest request){
         logger.info(String.format("Delete user with UserId '%s' by user with id %s" ,recordId, userId));
 
@@ -1960,10 +1950,10 @@ public class SamController {
 
     }
 
-    @PostMapping("/softDeleteUser/{recordId}/{isDeleted}/{userId}")
-    public ResponseEntity<?>softDeleteUser(@PathVariable Long recordId,
-                                           @PathVariable Boolean isDeleted,
-                                           @PathVariable("userId") long userId,
+    @PostMapping("softDeleteUser")
+    public ResponseEntity<?>softDeleteUser(@RequestParam Long recordId,
+                                           @RequestParam Boolean isDeleted,
+                                           @RequestParam("userId") long userId,
                                            HttpServletRequest request){
         logger.info(String.format("Mark user '%s' as deleted by user with id %s" ,recordId, userId));
 
@@ -2001,9 +1991,9 @@ public class SamController {
     //endregion
 
     //region passwords
-    @PostMapping("/updateUserPassword/{userId}")
+    @PostMapping("updateUserPassword")
     public ResponseEntity<?> updateUserPassword(@RequestBody @Valid String password,
-                                                @PathVariable("userId") long userId,
+                                                @RequestParam("userId") long userId,
                                                 HttpServletRequest request){
 
         logger.info(String.format("Update user password by user with id %s", userId));
@@ -2042,10 +2032,10 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @PostMapping("/passwordMatch/{password}/{passwordHash}/{userId}")
-    public ResponseEntity<?> passwordMatch(@PathVariable String password,
-                                           @PathVariable String passwordHash,
-                                           @PathVariable long userId,
+    @PostMapping("passwordMatch")
+    public ResponseEntity<?> passwordMatch(@RequestParam String password,
+                                           @RequestParam String passwordHash,
+                                           @RequestParam long userId,
                                            HttpServletRequest request) {
         logger.info(String.format("Check password match for user by user with ID %s", userId));
 
@@ -2062,9 +2052,8 @@ public class SamController {
 
         return new ResponseEntity<>(isMatched, HttpStatus.OK);
     }
-
-    @GetMapping("/generatePasswordHash/{password}/{userId}")
-    public ResponseEntity<?> generatePasswordHash(@PathVariable String password, @PathVariable Long userId, HttpServletRequest request) {
+    @GetMapping("generatePasswordHash")
+    public ResponseEntity<?> generatePasswordHash(@RequestParam String password, @RequestParam Long userId, HttpServletRequest request) {
         logger.info(String.format("Hash user password request by user with ID %s", userId));
         String ip = networkService.getIncomingIpAddress(request);
         String hashedPassword;
@@ -2083,9 +2072,9 @@ public class SamController {
     //endregion
 
     //region archived_users
-    @GetMapping("/getArchiveUserById/{logId}/{userId}")
-    public ResponseEntity<?> getArchiveUserById(@PathVariable Long logId,
-                                                @PathVariable Long userId,
+    @GetMapping("getArchiveUserById")
+    public ResponseEntity<?> getArchiveUserById(@RequestParam Long logId,
+                                                @RequestParam Long userId,
                                                 HttpServletRequest request) {
         String date = Generators.currentDate();
         logger.info(String.format("Retrieving archived user record for '%s'. Accessed by user with id %s on %s",logId, userId, date));
@@ -2106,9 +2095,9 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getArchiveUserByPfNo/{pfNo}/{userId}")
-    public ResponseEntity<?> getArchiveUserByPfNo(@PathVariable String pfNo,
-                                                  @PathVariable Long userId,
+    @GetMapping("getArchiveUserByPfNo")
+    public ResponseEntity<?> getArchiveUserByPfNo(@RequestParam String pfNo,
+                                                  @RequestParam Long userId,
                                                   HttpServletRequest request) {
         String date = Generators.currentDate();
         logger.info(String.format("Retrieving archived user record for PF_NO '%s'. Accessed by user with id %s on %s",pfNo, userId, date));
@@ -2129,8 +2118,8 @@ public class SamController {
 
         return new ResponseEntity<>(record, HttpStatus.OK);
     }
-    @GetMapping("/getArchiveUsers/{userId}")
-    public ResponseEntity<?> getArchiveUsers(@PathVariable Long userId,
+    @GetMapping("getArchiveUsers")
+    public ResponseEntity<?> getArchiveUsers(@RequestParam Long userId,
                                              HttpServletRequest request) {
         logger.info(String.format("Retrieve all archived users records by user with ID %s", userId));
 
@@ -2163,9 +2152,9 @@ public class SamController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @PostMapping("/createArchiveUser/{userId}")
+    @PostMapping("createArchiveUser")
     public ResponseEntity<?> createArchiveUser(@RequestBody @Valid ArchiveUserRequest log,
-                                               @PathVariable("userId") long userId,
+                                               @RequestParam("userId") long userId,
                                                HttpServletRequest request) {
         logger.info(String.format("Create new archive user record by user with ID %s", userId));
 
@@ -2198,8 +2187,8 @@ public class SamController {
     //endregion
 
     //region system_logs
-    @GetMapping("/getLogs/{userId}")
-    public ResponseEntity<?> getLogs(@PathVariable Long userId,
+    @GetMapping("getLogs")
+    public ResponseEntity<?> getLogs(@RequestParam Long userId,
                                      HttpServletRequest request) {
         logger.info(String.format("Retrieve all user logs by user with ID %s", userId));
 
@@ -2231,11 +2220,10 @@ public class SamController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-
-    @GetMapping("/getUserLogs/{startDate}/{endDate}/{userId}")
-    public ResponseEntity<?> getUserLogs(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime startDate,
-                                         @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime endDate,
-                                         @PathVariable Long userId,
+    @GetMapping("getUserLogs")
+    public ResponseEntity<?> getUserLogs(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime startDate,
+                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime endDate,
+                                         @RequestParam Long userId,
                                          HttpServletRequest request) {
         String date = Generators.currentDate();
         logger.info(String.format("Retrieving a list of system logs between '%s' and '%s'. Accessed by user with id %s on %s",startDate, endDate, userId, date));
@@ -2262,10 +2250,9 @@ public class SamController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-
-    @PostMapping("/createLog/{userId}")
+    @PostMapping("createLog")
     public ResponseEntity<?> createLog(@RequestBody @Valid LogRequest log,
-                                       @PathVariable("userId") long userId,
+                                       @RequestParam("userId") long userId,
                                        HttpServletRequest request) {
         logger.info(String.format("Create new log record by user with ID %s", userId));
 
@@ -2298,8 +2285,8 @@ public class SamController {
 
     //region archived_logs
 
-    @GetMapping("/getArchiveLogs/{userId}")
-    public ResponseEntity<?> getArchiveLogs(@PathVariable Long userId,
+    @GetMapping("getArchiveLogs")
+    public ResponseEntity<?> getArchiveLogs(@RequestParam Long userId,
                                             HttpServletRequest request) {
         logger.info(String.format("Retrieve all archived logs by user with ID %s", userId));
 
@@ -2332,9 +2319,9 @@ public class SamController {
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
 
-    @GetMapping("/getArchiveLogs/{archiveDate}/{userId}")
-    public ResponseEntity<?> getArchiveLogs(@PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime archiveDate,
-                                            @PathVariable Long userId,
+    @GetMapping("getArchiveLogs")
+    public ResponseEntity<?> getArchiveLogs(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDateTime archiveDate,
+                                            @RequestParam Long userId,
                                             HttpServletRequest request) {
         String date = Generators.currentDate();
         logger.info(String.format("Retrieving a list of archived logs for '%s'. Accessed by user with id %s on %s",archiveDate, userId, date));
@@ -2361,10 +2348,9 @@ public class SamController {
 
         return new ResponseEntity<>(records, HttpStatus.OK);
     }
-
-    @PostMapping("/createArchiveLog/{userId}")
+    @PostMapping("createArchiveLog")
     public ResponseEntity<?> createArchiveLog(@RequestBody @Valid ArchiveLogRequest log,
-                                              @PathVariable("userId") long userId,
+                                              @RequestParam("userId") long userId,
                                               HttpServletRequest request) {
         logger.info(String.format("Create new archive log record by user with ID %s", userId));
 
