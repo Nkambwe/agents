@@ -1,9 +1,6 @@
 package com.pbu.wendi.model.agents.models;
 import com.pbu.wendi.utils.DomainEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;

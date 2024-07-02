@@ -6,6 +6,7 @@ import com.pbu.wendi.repositories.agents.repos.IndividualRepository;
 import com.pbu.wendi.requests.agents.dto.*;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.exceptions.GeneralException;
+
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -684,7 +685,7 @@ public class AgentServiceImp implements AgentService {
         try{
 
             switch (type) {
-                case 1 -> {
+                case 1: {
                     //..get individual records
                     List<IndividualAgent> personRecords = individuals.findAllWithRelatedEntities();
                     if (!personRecords.isEmpty()) {
@@ -693,7 +694,8 @@ public class AgentServiceImp implements AgentService {
                         }
                     }
                 }
-                case 2 -> {
+                break;
+                case 2 : {
                     //..get business records
                     List<BusinessAgent> bizRecords = businesses.findAllWithRelatedEntities();
                     if (!bizRecords.isEmpty()) {
@@ -702,14 +704,15 @@ public class AgentServiceImp implements AgentService {
                         }
                     }
                 }
-                default -> {
+                break;
+                default : {
                     logger.info("An error occurred in method 'getAgents'");
                     logger.error("No agent type selected");
                     throw new GeneralException("No agent type selected");
                 }
             }
 
-            return CompletableFuture.completedFuture(records);
+
         } catch(Exception ex){
             logger.info("An error occurred in method 'getAgents'");
             logger.error(ex.getMessage());
@@ -717,6 +720,8 @@ public class AgentServiceImp implements AgentService {
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
             throw new GeneralException(String.format("%s", ex.getMessage()));
         }
+
+        return CompletableFuture.completedFuture(records);
     }
     @Transactional
     @Override
@@ -725,7 +730,7 @@ public class AgentServiceImp implements AgentService {
         try{
 
             switch (type) {
-                case 1 -> {
+                case 1: {
                     logger.info("Retrieving a list of individual agents");
                     //..get individual records
                     List<IndividualAgent> personRecords = individuals.findAllWithRelatedEntities(isDeleted);
@@ -735,7 +740,8 @@ public class AgentServiceImp implements AgentService {
                         }
                     }
                 }
-                case 2 -> {
+                break;
+                case 2: {
                     logger.info("Retrieving a list of business agents");
                     //..get business records
                     List<BusinessAgent> bizRecords = businesses.findAllWithRelatedEntities(isDeleted);
@@ -745,14 +751,14 @@ public class AgentServiceImp implements AgentService {
                         }
                     }
                 }
-                default -> {
+                break;
+                default: {
                     logger.info("An error occurred in method 'getAgents'");
                     logger.error("No agent type selected");
                     throw new GeneralException("No agent type selected");
                 }
             }
 
-            return CompletableFuture.completedFuture(records);
         } catch(Exception ex){
             logger.info("An error occurred in method 'getAgents'");
             logger.error(ex.getMessage());
@@ -760,6 +766,8 @@ public class AgentServiceImp implements AgentService {
             logger.stackTrace(Arrays.toString(ex.getStackTrace()));
             throw new GeneralException(String.format("%s", ex.getMessage()));
         }
+
+        return CompletableFuture.completedFuture(records);
     }
 
     @Transactional

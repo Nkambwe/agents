@@ -11,6 +11,7 @@ import org.hibernate.Hibernate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+
 /**
  * Class Name: User
  * Extends : DomainEntity class a base class for all database entities
@@ -21,7 +22,6 @@ import java.util.Objects;
 @Data
 @SuperBuilder
 @Entity
-@ToString(callSuper=true)
 @Table(name="ag_user")
 public class User extends DomainEntity {
     @Column(nullable = false, length = 80)

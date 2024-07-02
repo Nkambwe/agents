@@ -1,6 +1,9 @@
 package com.pbu.wendi.controllers;
 
 import com.pbu.wendi.configurations.ApplicationExceptionHandler;
+import com.pbu.wendi.services.sam.services.LogService;
+import com.pbu.wendi.services.sam.services.PermissionService;
+import com.pbu.wendi.services.sam.services.UserService;
 import com.pbu.wendi.requests.agents.dto.SettingsRequest;
 import com.pbu.wendi.requests.helpers.dto.LoginModel;
 import com.pbu.wendi.requests.sam.dto.LogRequest;
@@ -8,7 +11,6 @@ import com.pbu.wendi.requests.sam.dto.PermissionRequest;
 import com.pbu.wendi.requests.sam.dto.UserRequest;
 import com.pbu.wendi.responses.WendiResponse;
 import com.pbu.wendi.services.agents.services.SettingService;
-import com.pbu.wendi.services.sam.services.*;
 import com.pbu.wendi.utils.common.AppLoggerService;
 import com.pbu.wendi.utils.common.MailService;
 import com.pbu.wendi.utils.common.NetworkService;
@@ -171,7 +173,9 @@ public class LoginController {
 
                                 if (permissionRecords != null && !permissionRecords.isEmpty()) {
                                     for (PermissionRequest permission : permissionRecords) {
-                                        grants.add(permission.getName());
+                                        if(!grants.contains(permission.getName())){
+                                            grants.add(permission.getName());
+                                        }
                                     }
                                 }
                                 return null; // or return some meaningful value

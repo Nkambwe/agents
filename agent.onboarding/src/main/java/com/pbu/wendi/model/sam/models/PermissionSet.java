@@ -1,7 +1,9 @@
 package com.pbu.wendi.model.sam.models;
 
 import com.pbu.wendi.utils.DomainEntity;
+
 import jakarta.persistence.*;
+
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
@@ -9,7 +11,6 @@ import org.hibernate.Hibernate;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Class Name: Role

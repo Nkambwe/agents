@@ -4,8 +4,10 @@ import com.pbu.wendi.utils.DomainEntity;
 import com.pbu.wendi.utils.enums.AgentCategory;
 import com.pbu.wendi.utils.enums.AgentType;
 import com.pbu.wendi.utils.enums.RetailType;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
+
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;

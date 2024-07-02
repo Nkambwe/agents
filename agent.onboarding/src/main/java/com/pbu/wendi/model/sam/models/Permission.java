@@ -1,10 +1,8 @@
 package com.pbu.wendi.model.sam.models;
 
 import com.pbu.wendi.utils.DomainEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
@@ -45,7 +43,7 @@ public class Permission extends DomainEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Permission that = (Permission) o;;
+        Permission that = (Permission) o;
         return getId() != 0 && Objects.equals(getId(), that.getId());
     }
 

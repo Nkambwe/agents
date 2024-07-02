@@ -2,9 +2,8 @@ package com.pbu.wendi.model.attachments.models;
 
 import com.pbu.wendi.utils.DomainEntity;
 import com.pbu.wendi.utils.enums.AttachmentType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
+
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;

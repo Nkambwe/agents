@@ -1,7 +1,5 @@
 package com.pbu.wendi.requests.attachments.dto;
 
-import jakarta.persistence.Column;
-
 import java.time.LocalDateTime;
 
 public class AttachmentRequest {

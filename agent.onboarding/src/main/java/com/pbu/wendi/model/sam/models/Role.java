@@ -1,7 +1,9 @@
 package com.pbu.wendi.model.sam.models;
 
 import com.pbu.wendi.utils.DomainEntity;
+
 import jakarta.persistence.*;
+
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;

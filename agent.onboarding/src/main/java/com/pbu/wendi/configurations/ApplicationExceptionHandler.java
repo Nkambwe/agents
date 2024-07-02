@@ -3,6 +3,7 @@ package com.pbu.wendi.configurations;
 import com.pbu.wendi.utils.exceptions.*;
 import com.pbu.wendi.utils.exceptions.Error;
 import com.pbu.wendi.utils.exceptions.SecurityException;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class ApplicationExceptionHandler {
      **/
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<Error> resourceNotFoundExceptionHandler(NotFoundException e, HttpServletRequest request){
+
         Error error = new Error(
                 request.getRequestURI(),
                 e.getMessage(),
