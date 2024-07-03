@@ -1,5 +1,8 @@
 package com.pbu.wendi.controllers;
-
+/*
+* Class: SamController
+* Description: Controller class for System Access Management
+* */
 import com.pbu.wendi.configurations.ApplicationExceptionHandler;
 import com.pbu.wendi.requests.sam.dto.*;
 import com.pbu.wendi.responses.WendiResponse;
